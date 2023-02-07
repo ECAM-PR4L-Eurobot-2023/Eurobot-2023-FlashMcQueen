@@ -1,0 +1,5 @@
+{
+    "sketch": "pid\\pid.ino",
+    "output": "build",
+    "board": "arduino:avr:uno"
+}
