@@ -1,5 +1,3 @@
-
-
 #include "encodeur.h"
 #include <Arduino.h>
 ENCODEUR::ENCODEUR(int A, int B, double* count, double* count_T) {
@@ -10,8 +8,4 @@ ENCODEUR::ENCODEUR(int A, int B, double* count, double* count_T) {
     myCount = count;
     myCount_T = count_T;
 
-}
-
-void increment(){
-    if ()
 }

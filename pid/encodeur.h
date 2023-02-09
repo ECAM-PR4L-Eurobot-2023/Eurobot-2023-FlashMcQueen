@@ -12,7 +12,7 @@ class ENCODEUR{
         void increment();
 
         int trackA, trackB;
-        double* myCount, myCount_T,
+        double *myCount, *myCount_T;
 
 };
 

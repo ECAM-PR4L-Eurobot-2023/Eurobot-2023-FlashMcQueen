@@ -21,7 +21,7 @@ struct {
 } motD;
 
 PID PIDGauche(&motG.Count_T, &motG.pidOut, &motG.setPos, 1, 1, 0, 0, 3000, 1, 100);
-PID PIDGauche(&motD.Count_T, &motD.pidOut, &motD.setPos, 1, 1, 0, 0, 3000, 1, 100);
+PID PIDDroite(&motD.Count_T, &motD.pidOut, &motD.setPos, 1, 1, 0, 0, 3000, 1, 100);
 
 void setup()
 {
