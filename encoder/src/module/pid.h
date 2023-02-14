@@ -10,13 +10,19 @@ class PID{
 
         void setMode(bool Mode);
 
-        void compute();
+        bool compute();
 
         void setSampleTime();
 
         void setLimit(double Min, double Max);
 
         void setTuning(double Kp, double Ki, double Kd);
+
+        void setSetpoint(double Setpoint);
+
+        void setInput(double Input);
+
+        double getOutput();
 
     private:
         

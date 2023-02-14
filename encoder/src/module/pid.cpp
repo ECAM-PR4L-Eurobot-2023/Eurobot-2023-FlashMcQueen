@@ -1,5 +1,3 @@
-
-
 #include "pid.h"
 #include <Arduino.h>
 PID::PID(double* input, double* output, double* setpoint, double Kp_in, double Ki_in, double Kd_in, double min_in, double max_in, bool mode_in, unsigned long sampleTime_in) {
@@ -22,7 +20,7 @@ PID::PID(double* input, double* output, double* setpoint, double Kp_in, double K
 
 }
 
-void PID::compute(){
+bool PID::compute(){
     unsigned long now = millis();
     if ( (now - lastTime) >= sampleTime){
         double input = *myInput;
@@ -51,7 +49,10 @@ void PID::compute(){
 
         //keeps the integral part for the next loop
         last_I = MI;
+
+        return true;
     }
+    return false;
 
 }
 
@@ -60,4 +61,16 @@ void PID::setTuning(double Kp_in, double Ki_in, double Kd_in){
     Kp = Kp_in;
     Ki = Ki_in;
     Kd = Kd_in;
+}
+
+void PID::setSetpoint(double setpoint_in){
+    *mySetpoint = setpoint_in;
+}
+
+void PID::setInput(double input_in){
+    *myInput = input_in;
+}
+
+double PID::getOutput(){
+    return *myOutput;
 }

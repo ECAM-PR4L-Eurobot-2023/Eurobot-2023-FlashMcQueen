@@ -10,7 +10,7 @@ typedef struct {
 } SingleEncoder;
 
 class Encoder {
-  public:
+private:    
     const SingleEncoder encoder_a;
     const SingleEncoder encoder_b;
     volatile counter_unit counter;
