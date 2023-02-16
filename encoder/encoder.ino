@@ -2,19 +2,21 @@
 #include <driver/gpio.h>
 
 #include "src/module/encoder_compute.h"
+#include "src/module/locator.h"
 
-EncoderCompute encoder_left(25, 26, 50);
-EncoderCompute encoder_right(33, 32, 50);
+#define COMPUTE_TIMEOUT (20)
+
+EncoderCompute encoder_left(35, 34, COMPUTE_TIMEOUT);
+EncoderCompute encoder_right(23, 22, COMPUTE_TIMEOUT);
+Locator locator(&encoder_left, &encoder_right);
 
 void setup() {
 	Serial.begin(115200);
-  encoder_left.begin();
-  encoder_right.begin();
+  locator.begin();
 }
 
 void loop() {
-  encoder_left.update();
-  encoder_right.update();
+  locator.update();
 
   Serial.println("\n\n---");
   Serial.println(CIRCUMFERENCE_MM);
@@ -35,6 +37,15 @@ void loop() {
   Serial.println(encoder_left.get_speed_mm_s());
   Serial.print("Speed right mm: ");
   Serial.println(encoder_right.get_speed_mm_s());
+  Serial.print("Angle: ");
+  Serial.println(locator.get_angle_degree());
+
+  Position position = locator.get_position();
+
+  Serial.print("x: ");
+  Serial.println(position.x);
+  Serial.print("y: ");
+  Serial.println(position.y);
 
   delay(100);
 }

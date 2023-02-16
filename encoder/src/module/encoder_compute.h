@@ -16,6 +16,7 @@ class EncoderCompute {
     Encoder encoder;
     float speed_ticks;
     counter_unit mem_distance_ticks;
+    counter_unit delta_distance_ticks;
     unsigned long int timeout;
     unsigned long int mem_time;
 
@@ -28,6 +29,8 @@ public:
     float get_speed_mm_s(void);
     counter_unit get_distance_tick(void);
     float get_distance_mm(void);
+    counter_unit get_delta_distance_tick(void);
+    float get_delta_distance_mm(void);
     unsigned long int get_timeout(void);
     void set_timeout(unsigned long int);
 };
