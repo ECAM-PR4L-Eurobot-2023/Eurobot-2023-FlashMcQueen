@@ -9,6 +9,8 @@
 Locator::Locator(EncoderCompute *encoder_left, EncoderCompute *encoder_right, uint32_t timeout): 
     encoder_left(encoder_left), encoder_right(encoder_right), timeout(timeout), mem_time(millis()) {
         position = {0};
+        delta_distance = 0;
+        mem_time = millis();
 }
 
 void Locator::begin(void) {
@@ -27,7 +29,7 @@ void Locator::update(void) {
         // Get delta distances
         double delta_distance_left = encoder_left->get_delta_distance_mm();
         double delta_distance_right = encoder_right->get_delta_distance_mm();
-        double delta_distance = (delta_distance_left + delta_distance_right) / 2;
+        delta_distance = (delta_distance_left + delta_distance_right) / 2;
 
         // Calcul new angle
         position.angle_radian += (delta_distance_left - delta_distance_right) / (WHEELS_TO_CENTER * 2);
@@ -56,4 +58,8 @@ float Locator::get_angle_degree(void) {
 
 Position Locator::get_position(void) {
     return position;
+}
+
+double Locator::get_delta_distance(void) {
+    return delta_distance;
 }

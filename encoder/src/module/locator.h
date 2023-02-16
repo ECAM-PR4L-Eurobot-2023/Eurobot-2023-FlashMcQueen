@@ -17,6 +17,7 @@ class Locator {
     EncoderCompute *encoder_left;
     EncoderCompute *encoder_right;
     Position position;
+    double delta_distance;
     uint32_t mem_time;
     uint32_t timeout;
 
@@ -28,6 +29,7 @@ public:
     float get_angle_radian(void);
     float get_angle_degree(void);
     Position get_position(void);
+    double get_delta_distance(void);
 };
 
 #endif /* LOCATOR_H */

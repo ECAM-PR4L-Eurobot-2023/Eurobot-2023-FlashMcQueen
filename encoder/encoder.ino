@@ -19,8 +19,6 @@ void loop() {
   locator.update();
 
   Serial.println("\n\n---");
-  Serial.println(CIRCUMFERENCE_MM);
-  Serial.println(DISTANCE_PER_TICKS);
   Serial.print("Encoder left: ");
   Serial.println(encoder_left.get_distance_tick());
   Serial.print("Encoder right: ");
