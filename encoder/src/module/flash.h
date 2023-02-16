@@ -2,6 +2,7 @@
 #define FLASH_H
 
 #include "pid.h"
+#include "moteur.h"
 #include "encoder_compute.h"
 
 class FLASH {

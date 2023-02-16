@@ -1,5 +1,6 @@
 {
     "sketch": "pid\\pid.ino",
     "output": "build",
-    "board": "arduino:avr:uno"
+    "board": "esp32:esp32:esp32doit-devkit-v1",
+    "configuration": "FlashFreq=80,UploadSpeed=921600,DebugLevel=none,EraseFlash=none"
 }

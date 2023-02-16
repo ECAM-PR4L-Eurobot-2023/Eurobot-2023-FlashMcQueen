@@ -6,7 +6,7 @@ class PID{
         #define ON 1
         #define OFF 0
 
-        PID(double*, double*, double*, double, double, double, double, double, bool, unsigned long);
+        PID(double*, double*, double*, double, double, double, double, double, unsigned long);
 
         void setMode(bool Mode);
 

@@ -1,8 +1,8 @@
 #include "flash.h"
 #include <Arduino.h>
 
-FLASH::FLASH(PID PID_speed, PID PID_angle, PID PID_mot1, PID PID_mot2, EncoderCompute Encoder1, EncoderCompute Encoder2, Moteur moteur1, Moteur2):
-    Encoder_compute1(Encoder1), Encoder_compute2(Encoder2), PID_speed(PID_speed), PID_angle(PID_angle), PID_mot1(PID_mot1), PID_mot2(PID_mot2), Moteur(moteur1), Moteur(moteur2) {}
+FLASH::FLASH(PID PID_speed, PID PID_angle, PID PID_mot1, PID PID_mot2, EncoderCompute Encoder1, EncoderCompute Encoder2, Moteur moteur1, Moteur moteur2):
+    Encoder_compute1(Encoder1), Encoder_compute2(Encoder2), PID_speed(PID_speed), PID_angle(PID_angle), PID_mot1(PID_mot1), PID_mot2(PID_mot2), moteur1(moteur1), moteur2(moteur2) {}
 
 
 void FLASH::run() {
