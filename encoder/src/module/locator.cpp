@@ -18,7 +18,7 @@ void Locator::begin(void) {
     encoder_right->begin();
 }
 
-void Locator::update(void) {
+bool Locator::update(void) {
     if ((millis() - mem_time) > timeout) {
         timeout = millis();
 
@@ -45,7 +45,11 @@ void Locator::update(void) {
         // Calcul new position
         position.x += delta_distance * sin(position.angle_radian);
         position.y += delta_distance * cos(position.angle_radian);
+
+        return true;
     }
+
+    return false;
 }
 
 float Locator::get_angle_radian(void) {

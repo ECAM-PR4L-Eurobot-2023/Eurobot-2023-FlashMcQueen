@@ -25,7 +25,7 @@ public:
     Locator(EncoderCompute *, EncoderCompute *, uint32_t = DEFAULT_TIMEOUT);
 
     void begin(void);
-    void update(void);
+    bool update(void);
     float get_angle_radian(void);
     float get_angle_degree(void);
     Position get_position(void);
