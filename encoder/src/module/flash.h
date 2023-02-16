@@ -7,7 +7,7 @@
 class FLASH {
 
 public:
-    FLASH(PID, PID, PID, PID, EncoderCompute, EncoderCompute);
+    FLASH(PID, PID, PID, PID, EncoderCompute, EncoderCompute, Moteur, Moteur);
 
     void set_dist(float);
     void set_angle(float);
@@ -17,6 +17,7 @@ public:
 private:
     PID PID_speed, PID_mot1, PID_mot2, PID_angle;
     EncoderCompute Encoder_compute1, Encoder_compute2;
+    Moteur moteur1, moteur2;
 
 };
 
