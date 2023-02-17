@@ -5,21 +5,21 @@
 #include "moteur.h"
 #include "encoder_compute.h"
 
-class FLASH {
+// class FLASH {
 
-public:
-    FLASH(PID, PID, PID, PID, EncoderCompute, EncoderCompute, Moteur, Moteur);
+// public:
+//     FLASH(PID, PID, PID, PID, EncoderCompute, EncoderCompute, Moteur, Moteur);
 
-    void set_dist(float);
-    void set_angle(float);
+//     void set_dist(float);
+//     void set_angle(float);
 
-    void run();
+//     void run();
 
-private:
-    PID PID_speed, PID_mot1, PID_mot2, PID_angle;
-    EncoderCompute Encoder_compute1, Encoder_compute2;
-    Moteur moteur1, moteur2;
+// private:
+//     PID PID_speed, PID_mot1, PID_mot2, PID_angle;
+//     EncoderCompute Encoder_compute1, Encoder_compute2;
+//     Moteur moteur1, moteur2;
 
-};
+// };
 
 #endif

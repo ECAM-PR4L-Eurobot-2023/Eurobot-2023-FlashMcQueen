@@ -13,6 +13,7 @@ void EncoderCompute::begin(void) {
 void EncoderCompute::update(void) {
     if ((millis() - mem_time) > timeout) {
         speed_ticks = 1000.0 * (float)(encoder.get_counter() - mem_distance_ticks) / (float)timeout;
+        delta_distance_ticks = encoder.get_counter() - mem_distance_ticks;
         mem_distance_ticks = encoder.get_counter();
         mem_time = millis();
     }    
@@ -32,6 +33,15 @@ counter_unit EncoderCompute::get_distance_tick(void) {
 
 float EncoderCompute::get_distance_mm(void) {
     return mem_distance_ticks * DISTANCE_PER_TICKS;
+}
+
+
+counter_unit EncoderCompute::get_delta_distance_tick(void) {
+    return delta_distance_ticks;
+}
+
+float EncoderCompute::get_delta_distance_mm(void) {
+    return delta_distance_ticks * DISTANCE_PER_TICKS;
 }
 
 unsigned long int EncoderCompute::get_timeout(void) {
