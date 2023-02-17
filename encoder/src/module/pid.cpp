@@ -23,7 +23,7 @@ bool PID::compute(){
     if ( (now - lastTime) >= sampleTime){
         lastTime = now;
         double input = *myInput;
-        double error = *mySetpoint - input;
+        double error = computeError(*mySetpoint, input);
 
         //calculates the proportional part of the PI regulator
         double MP = Kp * (error);
@@ -72,4 +72,9 @@ void PID::setInput(double input_in){
 
 double PID::getOutput(){
     return *myOutput;
+}
+
+double PID::computeError(double setpoint, double input){
+    Serial.println("normal");
+    return setpoint - input;
 }

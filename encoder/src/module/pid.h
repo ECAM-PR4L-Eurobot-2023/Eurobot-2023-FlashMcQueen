@@ -24,7 +24,7 @@ class PID{
 
         double getOutput();
 
-    private:
+    protected:
         
         double Kp;                  // * (P)roportional Tuning Parameter
         double Ki;                  // * (I)ntegral Tuning Parameter
@@ -43,6 +43,8 @@ class PID{
         unsigned long lastTime;
 
         double last_I;
+
+        double virtual computeError(double, double);
 };
 
 #endif
