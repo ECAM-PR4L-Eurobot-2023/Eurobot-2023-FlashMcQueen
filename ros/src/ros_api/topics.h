@@ -6,7 +6,7 @@
 #define TOPIC_SET_ROTATION          "/robot/data/rotation/set"
 #define TOPIC_SET_DISTANCE_TICKS    "/robot/data/distance/set/ticks"
 #define TOPIC_SET_DISTANCE_MM       "/robot/data/distance/set/mm"
-#define TOPIC_DISTANCE_REACHED      "/robot/data/data/distance/reach"
+#define TOPIC_DISTANCE_REACHED      "/robot/data/distance/reach"
 #define TOPIC_URGENCY_STOP          "/robot/urgency-stop"
 #define TOPIC_DATA_ALL              "/robot/data/all"
 #define TOPIC_SET_PID_LEFT_WHEEL    "/robot/pid/wheel/left/set"
