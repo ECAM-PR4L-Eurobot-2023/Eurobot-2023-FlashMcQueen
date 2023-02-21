@@ -2,5 +2,6 @@
     "sketch": "pid\\pid.ino",
     "output": "build",
     "board": "esp32:esp32:esp32doit-devkit-v1",
-    "configuration": "FlashFreq=80,UploadSpeed=921600,DebugLevel=none,EraseFlash=none"
+    "configuration": "FlashFreq=80,UploadSpeed=921600,DebugLevel=none,EraseFlash=none",
+    "port": "COM3"
 }

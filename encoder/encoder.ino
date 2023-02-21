@@ -31,6 +31,13 @@ double set2 = 350;
 PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
 PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
 
+
+double ina = 0;
+double outa = 0;
+double seta = 90;
+
+PIDAngle pa(&ina, &outa, &seta, 0.4,0.1,0,-255,255, 400);
+
 void setup() {
 	Serial.begin(115200);
   moteurL.begin();
@@ -69,20 +76,16 @@ void loop() {
   // Serial.println(position.y);
   // in1 = getDistRun(locator.get_position(), position);
   // in2 = getDistRun(locator.get_position(), position);
-  in1 = encoder_left.get_speed_mm_s()/10;
-  in2 = encoder_right.get_speed_mm_s()/10;
-  p1.compute();
-  p2.compute();
-  moteurL.setTension(out1);
-  moteurR.setTension(out2);
-  Serial.print("in1: ");
-  Serial.println(in1);
-  Serial.print("out1: ");
-  Serial.println(out1);
-  Serial.print("in2: ");
-  Serial.println(in2);
-  Serial.print("out2: ");
-  Serial.println(out2);
+  ina = locator.get_angle_degree();
+  pa.compute();
+
+  moteurL.setTension(outa/2);
+  moteurR.setTension(-outa/2);
+  Serial.print("ina: ");
+  Serial.println(ina);
+  Serial.print("outa: ");
+  Serial.println(outa);
+
 
   // moteur1.setTension(100);
   // moteur2.setTension(100);
