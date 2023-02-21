@@ -9,6 +9,10 @@ double PIDAngle::computeError(double setpoint, double input){
     else if (error < -180) {
         error += 360;
     }
-    Serial.println("override");
+    if(error>-3 && error <3){
+        error=0;
+    }
+    Serial.print("error:");
+    Serial.println(error);
     return error;
 }

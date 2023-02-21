@@ -15,6 +15,8 @@ PID::PID(double* input, double* output, double* setpoint, double Kp_in, double K
     lastTime = millis() - sampleTime;
 
     last_I = 0;
+    MI=0;
+    MP=0;
 
 }
 
@@ -26,20 +28,22 @@ bool PID::compute(){
         double error = computeError(*mySetpoint, input);
 
         //calculates the proportional part of the PI regulator
-        double MP = Kp * (error);
+        MP = Kp * (error);
 
 
         //calculates the integral part of the PI regulator
-        double MI = last_I + Ki * (double)sampleTime*pow(10, -3) * (error);   //pas certain de c eque je fait
+        MI = last_I + Ki * (double)sampleTime*pow(10, -3) * (error);   //pas certain de c eque je fait
 
 
         //anti windup
-        if (MP + MI > max) {
-            MI = max - MP;
-        }
-        else if (MP + MI < min) {
-            MI = min - MP;
-        }
+
+        if (Ki!=0){
+            if (MP + MI > max) {
+                MI = max - MP;
+            }
+            else if (MP + MI < min) {
+                MI = min - MP;
+            }}
 
 
         //output
@@ -48,8 +52,13 @@ bool PID::compute(){
 
         //keeps the integral part for the next loop
         last_I = MI;
+        Serial.print("MI:");
+        Serial.println(MI);
+        Serial.print("MP:");
+        Serial.println(MP);
 
         return true;
+
     }
     return false;
 

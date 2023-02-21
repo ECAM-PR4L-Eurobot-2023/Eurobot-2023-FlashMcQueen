@@ -43,7 +43,7 @@ class PID{
         unsigned long lastTime;
 
         double last_I;
-
+        double MI,MP;
         double virtual computeError(double, double);
 };
 
