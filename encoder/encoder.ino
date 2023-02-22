@@ -92,31 +92,35 @@ void loop() {
   inp = getDist(locator.get_position(), start);
   // Serial.println(locator.get_position().x);
   // Serial.println(locator.get_position().y);
+  //Serial.println(locator.get_position().x);
+  //Serial.println(encoder_right.get_distance_mm());
+  // moteurL.setTension(100);
+  // moteurR.setTension(0);
   if(pp.compute()){
     set1 = outp;
     set2 = outp;
 
-    Serial.print("inp: ");
-    Serial.println(inp);
-    Serial.print("outp: ");
-    Serial.println(outp);
-    Serial.println("-------");
+    // Serial.print("inp: ");
+    // Serial.println(inp);
+    // Serial.print("outp: ");
+    // Serial.println(outp);
+    // Serial.println("-------");
   }
-  // set1 = 100;
-  // set2 = 100;
+  // set1 = 200;
+  // set2 = 200;
   bool a = p1.compute();
   bool b = p2.compute();
   if (a || b){
-    Serial.print("in1: ");
-    Serial.println(in1);
-    Serial.print("out1: ");
-    Serial.println(out1);
-    Serial.print("in2: ");
-    Serial.println(in2);
-    Serial.print("out2: ");
-    Serial.println(out2);
-    moteurL.setTension(out1);
-    moteurR.setTension(out2);
+    // Serial.print("in1: ");
+    // Serial.println(in1);
+    // Serial.print("out1: ");
+    // Serial.println(out1);
+    // Serial.print("in2: ");
+    // Serial.println(in2);
+    // Serial.print("out2: ");
+    // Serial.println(out2);
+    // moteurL.setTension(out1);
+    // moteurR.setTension(out2);
   }
 
   delay(50);
