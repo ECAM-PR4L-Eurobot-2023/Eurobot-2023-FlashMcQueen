@@ -31,14 +31,14 @@ double set2 = 350;
 
 // PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
 // PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
-PID p1(&in1, &out1, &set1, 0.30, 0.1, 0, -255, 255, 400);
-PID p2(&in2, &out2, &set2, 0.31, 0.1, 0, -255, 255, 400);
+PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
+PID p2(&in2, &out2, &set2, 0.31, 0.08, 0, -255, 255, 400);
 
 double inp = 0;
 double outp = 0;
 double setp = 300;
 
-PIDPosition pp(&inp,&outp,&setp,0.2,0.000,0,-800,800,200);
+PIDPosition pp(&inp,&outp,&setp,1,0.5,0,-800,800,200);
 
 
 double ina = 0;
@@ -100,27 +100,27 @@ void loop() {
     set1 = outp;
     set2 = outp;
 
-    // Serial.print("inp: ");
-    // Serial.println(inp);
-    // Serial.print("outp: ");
-    // Serial.println(outp);
-    // Serial.println("-------");
+    Serial.print("inp: ");
+    Serial.println(inp);
+    Serial.print("outp: ");
+    Serial.println(outp);
+    Serial.println("-------");
   }
   // set1 = 200;
   // set2 = 200;
   bool a = p1.compute();
   bool b = p2.compute();
   if (a || b){
-    // Serial.print("in1: ");
-    // Serial.println(in1);
-    // Serial.print("out1: ");
-    // Serial.println(out1);
-    // Serial.print("in2: ");
-    // Serial.println(in2);
-    // Serial.print("out2: ");
-    // Serial.println(out2);
-    // moteurL.setTension(out1);
-    // moteurR.setTension(out2);
+    Serial.print("in1: ");
+    Serial.println(in1);
+    Serial.print("out1: ");
+    Serial.println(out1);
+    Serial.print("in2: ");
+    Serial.println(in2);
+    Serial.print("out2: ");
+    Serial.println(out2);
+    moteurL.setTension(out1);
+    moteurR.setTension(out2);
   }
 
   delay(50);
