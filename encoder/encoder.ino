@@ -6,6 +6,7 @@
 #include "src/module/pid.h"
 #include "src/module/pidAngle.h"
 #include "src/module/moteur.h"
+#include "src/module/pidPosition.h"
 
 #define COMPUTE_TIMEOUT (20)
 
@@ -28,8 +29,16 @@ double in2 = 0;
 double out2 = 0;
 double set2 = 350;
 
-PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
-PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
+// PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
+// PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
+PID p1(&in1, &out1, &set1, 0.30, 0.1, 0, -255, 255, 400);
+PID p2(&in2, &out2, &set2, 0.31, 0.1, 0, -255, 255, 400);
+
+double inp = 0;
+double outp = 0;
+double setp = 300;
+
+PIDPosition pp(&inp,&outp,&setp,0.2,0.000,0,-800,800,200);
 
 
 double ina = 0;
@@ -37,6 +46,10 @@ double outa = 0;
 double seta = 45;
 
 PIDAngle pa(&ina, &outa, &seta, 0.7,0.1,0,-100,100, 100);
+
+Position start = {0,0,0,0};
+Position goal = {100,0,0,0};
+double dist = 700;
 
 void setup() {
 	Serial.begin(115200);
@@ -48,79 +61,66 @@ void setup() {
 void loop() {
   locator.update();
 
-  //Serial.println("\n\n---");
-  // Serial.print("Encoder left: ");
-  // Serial.println(encoder_left.get_distance_tick());
-  // Serial.print("Encoder right: ");
-  // Serial.println(encoder_right.get_distance_tick());
-  // Serial.print("Speed left: ");
-  // Serial.println(encoder_left.get_speed_tick_s());
-  // Serial.print("Speed right: ");
-  // Serial.println(encoder_right.get_speed_tick_s());
-  // Serial.print("Encoder left mm: ");
-  // Serial.println(encoder_left.get_distance_mm());
-  // Serial.print("Encoder right mm: ");
-  // Serial.println(encoder_right.get_distance_mm());
-  // Serial.print("Speed left mm: ");
-  // Serial.println(encoder_left.get_speed_mm_s());
-  // Serial.print("Speed right mm: ");
-  // Serial.println(encoder_right.get_speed_mm_s());
-  // Serial.print("Angle: ");
-  // Serial.println(locator.get_angle_degree());
+  // ina = locator.get_angle_degree();
+  // double t;
+  // if(pa.compute()){
+  //   if (outa>0){
+  //     t = map(outa,0,100,50,100);
+  //   }
+  //   else{
+  //     t = map(outa,-100,0,-100,-50);
+  //   }
 
-  // Position position = locator.get_position();
+  //   moteurL.setTension(t);
+  //   moteurR.setTension(-t);
+  //   // }
+  //   Serial.print("ina: ");
+  //   Serial.println(ina);
+  //   Serial.print("outa: ");
+  //   Serial.println(outa);
+  //   Serial.print("t: ");
+  //   Serial.println(t);
+  //   Serial.println("-------");
 
-  // Serial.print("x: ");
-  // Serial.println(position.x);
-  // Serial.print("y: ");
-  // Serial.println(position.y);
-  // in1 = getDistRun(locator.get_position(), position);
-  // in2 = getDistRun(locator.get_position(), position);
-  ina = locator.get_angle_degree();
-  //Serial.println(locator.get_angle_degree());
-  //Serial.println(encoder_right.get_delta_distance_mm());
-  double t;
-  if(pa.compute()){
-    if (outa>0){
-      t = map(outa,0,100,50,100);
-    }
-    else{
-      t = map(outa,-100,0,-100,-50);
-    }
-    // if (outa > 5){
-    //   moteurL.setTension(outa+64);
-    //   moteurR.setTension(-outa-64);
-    // }else if (outa < -5){
-    //   moteurL.setTension(outa-64);
-    //   moteurR.setTension(-outa+64);
-    // }else{
-    moteurL.setTension(t);
-    moteurR.setTension(-t);
-    // }
-    Serial.print("ina: ");
-    Serial.println(ina);
-    Serial.print("outa: ");
-    Serial.println(outa);
-    Serial.print("t: ");
-    Serial.println(t);
+   
+  //}
+  //double distLeft = getDist(locator.get_position, )
+  //in1 = 
+
+  setp = dist;
+  inp = getDist(locator.get_position(), start);
+  // Serial.println(locator.get_position().x);
+  // Serial.println(locator.get_position().y);
+  if(pp.compute()){
+    set1 = outp;
+    set2 = outp;
+
+    Serial.print("inp: ");
+    Serial.println(inp);
+    Serial.print("outp: ");
+    Serial.println(outp);
     Serial.println("-------");
   }
-  // Serial.println(locator.get_position().x);
-  //Serial.println(locator.get_position().angle_degree);
-  //Serial.println(encoder_right.get_distance_mm());
+  // set1 = 100;
+  // set2 = 100;
+  bool a = p1.compute();
+  bool b = p2.compute();
+  if (a || b){
+    Serial.print("in1: ");
+    Serial.println(in1);
+    Serial.print("out1: ");
+    Serial.println(out1);
+    Serial.print("in2: ");
+    Serial.println(in2);
+    Serial.print("out2: ");
+    Serial.println(out2);
+    moteurL.setTension(out1);
+    moteurR.setTension(out2);
+  }
 
-
-  // moteur1.setTension(100);
-  // moteur2.setTension(100);
-
-  // moteurL.setTension(-64);
-  // moteurR.setTension(64);
-  // delay(1000);
-  // moteurL.setTension(-32);
-  // moteurR.setTension(32);
   delay(50);
 }
 
-double getDistRun(Position start, Position end){
+double getDist(Position start, Position end){
     return sqrt(pow(end.x - start.x, 2) + pow(end.y - start.y, 2));
 }

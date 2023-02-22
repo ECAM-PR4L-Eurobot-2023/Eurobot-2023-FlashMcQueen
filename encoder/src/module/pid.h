@@ -10,7 +10,7 @@ class PID{
 
         void setMode(bool Mode);
 
-        bool compute();
+        bool virtual compute();
 
         void setSampleTime();
 
