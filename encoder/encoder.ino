@@ -56,6 +56,7 @@ void setup() {
   moteurL.begin();
   moteurR.begin();
   locator.begin();
+  delay(1000);
 }
 
 void loop() {

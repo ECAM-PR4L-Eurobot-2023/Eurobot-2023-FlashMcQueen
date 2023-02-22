@@ -7,8 +7,9 @@ bool PIDPosition::compute(){
         lastTime = now;
         double input = *myInput;
         double error = computeError(*mySetpoint, input);
-        if (error> 400 || error < -400){
-            Kp = 0.2;
+        if (error> 500 || error < -400){
+            // Kp = 0.2;
+            Kp = 0.18;
         }
         else{
             Kp=0.035;
