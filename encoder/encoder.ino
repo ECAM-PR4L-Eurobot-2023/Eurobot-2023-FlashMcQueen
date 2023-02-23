@@ -36,9 +36,9 @@ PID p2(&in2, &out2, &set2, 0.31, 0.08, 0, -255, 255, 400);
 
 double inp = 0;
 double outp = 0;
-double setp = 300;
+double setp = 400;
 
-PIDPosition pp(&inp,&outp,&setp,1,0.5,0,-800,800,200);
+PIDPosition pp(&inp,&outp,&setp,0.0009,0,0,-500,500,200);
 
 
 double ina = 0;
@@ -49,7 +49,7 @@ PIDAngle pa(&ina, &outa, &seta, 0.7,0.1,0,-100,100, 100);
 
 Position start = {0,0,0,0};
 Position goal = {100,0,0,0};
-double dist = 700;
+double dist = 400;
 
 void setup() {
 	Serial.begin(115200);
@@ -111,14 +111,14 @@ void loop() {
   bool a = p1.compute();
   bool b = p2.compute();
   if (a || b){
-    Serial.print("in1: ");
-    Serial.println(in1);
-    Serial.print("out1: ");
-    Serial.println(out1);
-    Serial.print("in2: ");
-    Serial.println(in2);
-    Serial.print("out2: ");
-    Serial.println(out2);
+    // Serial.print("in1: ");
+    // Serial.println(in1);
+    // Serial.print("out1: ");
+    // Serial.println(out1);
+    // Serial.print("in2: ");
+    // Serial.println(in2);
+    // Serial.print("out2: ");
+    // Serial.println(out2);
     moteurL.setTension(out1);
     moteurR.setTension(out2);
   }
