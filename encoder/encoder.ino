@@ -35,7 +35,8 @@ double set2 = 2048;
 PID p1(&in1, &out1, &set1, 0.08, 0.008, 0, -200, 200, 50,10);
 PID p2(&in2, &out2, &set2, 0.08, 0.008, 0, -200, 200, 50,10);
 
-FLASH flash(0.08, 0.008, 0.17, 0.008, &encoder_left, &encoder_right, moteurL, moteurR);
+// FLASH flash(0.08, 0.008, 0.17, 0.008, &encoder_left, &encoder_right, moteurL, moteurR); // nice for small setpoints (2048 45)
+FLASH flash(0.08, 0.025, 0.10, 0.025, &encoder_left, &encoder_right, moteurL, moteurR);
 
 void setup() {
 	Serial.begin(115200);
