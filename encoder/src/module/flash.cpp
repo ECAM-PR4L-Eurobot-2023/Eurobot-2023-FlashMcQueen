@@ -1,71 +1,85 @@
 #include "flash.h"
 #include <Arduino.h>
+#include <math.h>
+#include "encoder_compute.h"
 
-FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle, double kp_mot1, double ki_mot1, double kp_mot2, double ki_mot2, EncoderCompute Encoder1, EncoderCompute Encoder2, Moteur moteur1, Moteur moteur2, Locator locator):
-    Encoder_compute1(Encoder1), Encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),locator(locator),
-    PID_speed(PID(&inputDist, &outputDist, &setPointDist,1,0,0,-1000,1000,200)),PID_angle(PIDAngle(&inputAngle, &outputAngle, &setPointAngle,1,0,0,-200,200,200)),PID_mot1(PID(&inputMot1,&outputMot1, &setPointMot1,1,0,0,-255,255,200)),PID_mot2(PID(&inputMot2,&outputMot2, &setPointMot2,1,0,0,-255,255,200))  {
-        this->kp_dist = kp_dist;
-        this->ki_dist = ki_dist;
-        this->kp_angle = kp_angle;
-        this->ki_angle = ki_angle;
-        this->kp_mot1 = kp_mot1;
-        this->ki_mot1 = ki_mot1;
-        this->kp_mot2 = kp_mot2;
-        this->ki_mot2 = ki_mot2;
-        
-        setPointDist = 0;
-        inputDist = 0;
-        outputDist = 0;
+#define WHEELS_TO_CENTER (152)  // mm
 
-        setPointAngle = 0;
-        inputAngle = 0;
-        outputAngle = 0;
-
-        inputMot1 = 0;
-        outputMot1 = 0;
-        setPointMot1 = 0;
-
-        inputMot2 = 0;
-        outputMot2 = 0;
-        setPointMot2 = 0;
-
-
-        // PID_speed = PID(&inputDist, &outputDist, &setPointDist,1,0,0,-1000,1000,200);
-        // PID_angle = PIDAngle(&inputAngle, &outputAngle, &setPointAngle,1,0,0,-200,200,200);
-
-        // PID_mot1 = PID(&inputMot1,&outputMot1, &setPointMot1,1,0,0,-255,255,200);
-        // PID_mot2 = PID(&inputMot2,&outputMot2, &setPointMot2,1,0,0,-255,255,200);
-
-
+FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle, EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2):
+    encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),
+    PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-400,400,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-400,400,50, 50)){
+        setPointAngle=0;
+        setPointDist=0;
+        inputAngle=0;
+        inputDist=0;
+        limPwmD=200;
+        limPwmG=200;
     }
 
 
 void FLASH::run() {
+    inputDist = (double)encoder_compute1->get_ticks_since_last_command()+(double)encoder_compute2->get_ticks_since_last_command();
+    inputAngle = (double)encoder_compute1->get_ticks_since_last_command()-(double)encoder_compute2->get_ticks_since_last_command();
+    Serial.println((double)encoder_compute1->get_ticks_since_last_command());
+    Serial.print("inputAngle :");
+    Serial.println(inputAngle);
+    Serial.print("inputDist :");
+    Serial.println(inputDist);
+    Serial.println("dist");
+    bool distCompute = PID_dist.compute();
+    Serial.println("angle");
+    bool angleCompute = PID_angle.compute();
+    if (distCompute || angleCompute) {
+        pwmg = (outputDist + outputAngle)/2;
+        pwmd = (outputDist - outputAngle)/2;
+        difPwm = pwmg - pwmd;
+        if (abs(difPwm) > 50) {
+            if (difPwm > 0) {
+                limPwmG = 240;
+            } else {
+                limPwmD = 240;
+            }
+        }
+        if (pwmg > limPwmG) {
+            pwmg = limPwmG;
+        }
+        if (pwmd > limPwmD) {
+            pwmd = limPwmD;
+        }
+        // Serial.print("outputAngle :");
+        // Serial.println(outputAngle);
+        // Serial.print("outputDist :");
+        // Serial.println(outputDist);
+        // Serial.print("pwmg :");
+        // Serial.println(pwmg);
+        // Serial.print("pwmd :");
+        // Serial.println(pwmd);
+        if (encoder_compute1->get_speed_tick_s()<10 && encoder_compute1->get_speed_tick_s()>-10 ){
+            moteur1.setTensionKickStart(pwmg,5);
+        }
+        else{
+            moteur1.setTension(pwmg);
+        }
+        if (encoder_compute2->get_speed_tick_s()<10 && encoder_compute2->get_speed_tick_s()>-10 ){
+            moteur2.setTensionKickStart(pwmd,5);
+        }
+        else{
+            moteur2.setTension(pwmd);
+        }
+        // moteur1.setTension(pwmg);
+        // moteur2.setTension(pwmd);
+    }
 
-    inputDist = FLASH::getDistRun(locator.get_position(), start);
-    inputAngle = locator.get_angle_degree();
-
-    if (PID_speed.compute() || PID_angle.compute()) {
-        setPointMot1 = PID_speed.getOutput() + PID_angle.getOutput()/2;
-        setPointMot2 = PID_speed.getOutput() - PID_angle.getOutput()/2;
-    }
-    if (PID_mot1.compute()){
-        moteur1.setTension(PID_mot1.getOutput());
-    }
-    if (PID_mot2.compute()){
-        moteur2.setTension(PID_mot2.getOutput());
-    }
 }
 
-void FLASH::set_dist(float dist) {
-    inputDist = dist;
-    start = locator.get_position();
+void FLASH::set_angle(double angle){
+    setPointAngle= (M_PI *2 * WHEELS_TO_CENTER* angle)/(180*DISTANCE_PER_TICKS);
 }
 
-void FLASH::set_angle(float angle){
-    inputAngle=angle;
+void FLASH::set_dist(double dist){
+    setPointDist= dist;
 }
 
-double FLASH::getDistRun(Position pos1, Position pos2) {
-    return sqrt(pow(pos1.x - pos2.x, 2) + pow(pos1.y - pos2.y, 2));
+bool FLASH::isDone(){
+    return PID_dist.isDone() && PID_angle.isDone();
 }

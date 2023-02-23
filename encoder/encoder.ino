@@ -7,6 +7,7 @@
 #include "src/module/pidAngle.h"
 #include "src/module/moteur.h"
 #include "src/module/pidPosition.h"
+#include "src/module/flash.h"
 
 #define COMPUTE_TIMEOUT (20)
 
@@ -31,27 +32,10 @@ double set2 = 2048;
 
 // PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
 // PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
-// PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
-// PID p2(&in2, &out2, &set2, 0.31, 0.08, 0, -255, 255, 400);
-PID p1(&in1, &out1, &set1, 0.08, 0, 0, -200, 200, 50);
-PID p2(&in2, &out2, &set2, 0.08, 0, 0, -200, 200, 50);
+PID p1(&in1, &out1, &set1, 0.08, 0.008, 0, -200, 200, 50,10);
+PID p2(&in2, &out2, &set2, 0.08, 0.008, 0, -200, 200, 50,10);
 
-double inp = 0;
-double outp = 0;
-double setp = 400;
-
-// PIDPosition pp(&inp,&outp,&setp,0.0009,0,0,-500,500,200);
-
-
-double ina = 0;
-double outa = 0;
-double seta = 45;
-
-PIDAngle pa(&ina, &outa, &seta, 0.7,0.1,0,-100,100, 100);
-
-Position start = {0,0,0,0};
-Position goal = {100,0,0,0};
-double dist = 400;
+FLASH flash(0.08, 0.008, 0.17, 0.008, &encoder_left, &encoder_right, moteurL, moteurR);
 
 void setup() {
 	Serial.begin(115200);
@@ -61,27 +45,49 @@ void setup() {
   delay(1000);
   encoder_left.reset_ticks_since_last_command();
   encoder_right.reset_ticks_since_last_command();
+  flash.set_angle(0);
+  flash.set_dist(2048*10);
 }
 
 void loop() {
   locator.update();
-  in1 = (double)encoder_left.get_ticks_since_last_command();
-  in2 = (double)encoder_right.get_ticks_since_last_command();
+  // Serial.println((double)encoder_left.get_ticks_since_last_command());
+  // in2 = (double)encoder_right.get_ticks_since_last_command();
 
 
-  if (p1.compute()) {
-    moteurL.setTensionKickStart(out1);
-    Serial.print("out1: ");
-    Serial.println(out1);
-    Serial.print("in1: ");
-    Serial.println(in1);
-    Serial.println("-----");
+  // if (p1.compute()) {
+  //   if (encoder_left.get_speed_tick_s()<10 && encoder_left.get_speed_tick_s()>-10 ){
+  //   moteurL.setTensionKickStart(out1);
+  //   }
+  // else{
+  //   moteurL.setTension(out1);
+  // }
+  //   Serial.print("out1: ");
+  //   Serial.println(out1);
+  //   Serial.print("in1: ");
+  //   Serial.println(in1);
+  //   Serial.println("-----");
+  // }
+  // if (p2.compute()) {
+  //   if (encoder_right.get_speed_tick_s()<10 && encoder_right.get_speed_tick_s()>-10 ){
+  //   moteurR.setTensionKickStart(out2);
+  //   }
+  // else{
+  //   moteurR.setTension(out2);
+  // }
+  // }
+
+  flash.run();
+
+  if (flash.isDone()){
+    flash.set_angle(180);
+    flash.set_dist(0);
+    encoder_left.reset_ticks_since_last_command();
+    encoder_right.reset_ticks_since_last_command();
   }
-  if (p2.compute()) {
-    moteurR.setTension(out2);
-  }
 
-
+  // moteurL.setTensionKickStart(40);
+  // moteurR.setTensionKickStart(40);
   delay(25);
 }
 

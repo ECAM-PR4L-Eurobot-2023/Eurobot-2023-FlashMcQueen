@@ -6,7 +6,7 @@ class PID{
         #define ON 1
         #define OFF 0
 
-        PID(double*, double*, double*, double, double, double, double, double, unsigned long);
+        PID(double*, double*, double*, double, double, double, double, double, unsigned long, double);
 
         void setMode(bool Mode);
 
@@ -24,6 +24,8 @@ class PID{
 
         double getOutput();
 
+        bool isDone();
+
     protected:
         
         double Kp;                  // * (P)roportional Tuning Parameter
@@ -35,7 +37,7 @@ class PID{
         double *mySetpoint;           //   PID, freeing the user from having to constantly tell us
                                     //   what these values are.  with pointers we'll just know.
 
-        double min, max;
+        double min, max, acceptableError;
         bool mode;
 
         unsigned long sampleTime;
@@ -45,6 +47,8 @@ class PID{
         double last_I;
         double MI,MP;
         double virtual computeError(double, double);
+
+        int done;
 };
 
 #endif

@@ -1,6 +1,6 @@
 #include "pid.h"
 #include <Arduino.h>
-PID::PID(double* input, double* output, double* setpoint, double Kp_in, double Ki_in, double Kd_in, double min_in, double max_in, unsigned long sampleTime_in) {
+PID::PID(double* input, double* output, double* setpoint, double Kp_in, double Ki_in, double Kd_in, double min_in, double max_in, unsigned long sampleTime_in, double acceptableError_in) {
     myInput = input;
     myOutput = output;
     mySetpoint = setpoint;
@@ -8,7 +8,11 @@ PID::PID(double* input, double* output, double* setpoint, double Kp_in, double K
     max = max_in;
     min = min_in;
 
+    acceptableError = acceptableError_in;
+
     sampleTime = sampleTime_in;
+    
+    done = false;
 
     PID::setTuning(Kp_in,Ki_in,Kd_in);
 
@@ -26,6 +30,13 @@ bool PID::compute(){
         lastTime = now;
         double input = *myInput;
         double error = computeError(*mySetpoint, input);
+        if (error<acceptableError && error>-acceptableError){
+            error = 0;
+            done++;
+        }
+        else{
+            done = 0;
+        }
         Serial.print("error :");
         Serial.println(error);
 
@@ -97,4 +108,8 @@ double PID::getOutput(){
 double PID::computeError(double setpoint, double input){
     // Serial.println("normal");
     return setpoint - input;
+}
+
+bool PID::isDone(){
+    return done > 5;
 }

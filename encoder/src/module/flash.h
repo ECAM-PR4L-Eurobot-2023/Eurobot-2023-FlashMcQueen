@@ -10,22 +10,21 @@
 class FLASH {
 
 public:
-    FLASH(double, double, double, double, double, double, double, double, EncoderCompute, EncoderCompute, Moteur, Moteur, Locator);
+    FLASH(double, double, double, double, EncoderCompute *, EncoderCompute *, Moteur, Moteur);
 
-    void set_dist(float);
-    void set_angle(float);
+    void set_dist(double);
+    void set_angle(double);
 
     void run();
 
+    bool isDone();
 private:
-    double getDistRun(Position,Position);
 
-    PID PID_speed, PID_mot1, PID_mot2;
-    PIDAngle PID_angle;
-    EncoderCompute Encoder_compute1, Encoder_compute2;
+    PID PID_dist, PID_angle;
+    EncoderCompute *encoder_compute1;
+    EncoderCompute *encoder_compute2;
     Moteur moteur1, moteur2;
-    Locator locator;
-    double kp_dist, ki_dist, kp_angle, ki_angle, kp_mot1, ki_mot1, kp_mot2, ki_mot2;
+    double kp_dist, ki_dist, kp_angle, ki_angle;
     
     double setPointDist ;
     double inputDist ;
@@ -35,15 +34,8 @@ private:
     double inputAngle ;
     double outputAngle;
 
-    double inputMot1;
-    double outputMot1;
-    double setPointMot1;
-
-    double inputMot2;
-    double outputMot2;
-    double setPointMot2;
-
-    Position start;
+    double pwmg, pwmd;
+    double limPwmG, limPwmD, difPwm;
 
 };
 

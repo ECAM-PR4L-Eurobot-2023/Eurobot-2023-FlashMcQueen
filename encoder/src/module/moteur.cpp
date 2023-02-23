@@ -32,3 +32,21 @@ void Moteur::setTension(int tension) {
     }
     analogWrite(pinE, abs(tension));
 }
+
+void Moteur::setTensionKickStart(int tension, int time){
+    if (tension > 0) {
+        digitalWrite(pinA, HIGH);
+        digitalWrite(pinB, LOW);
+    }
+    else if (tension < 0) {
+        digitalWrite(pinA, LOW);
+        digitalWrite(pinB, HIGH);
+    }
+    else {
+        digitalWrite(pinA, LOW);
+        digitalWrite(pinB, LOW);
+    }
+    analogWrite(pinE, 255);
+    delay(time);
+    analogWrite(pinE, abs(tension));
+}
