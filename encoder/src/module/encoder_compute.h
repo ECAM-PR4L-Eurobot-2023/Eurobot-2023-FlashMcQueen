@@ -19,6 +19,7 @@ class EncoderCompute {
     counter_unit delta_distance_ticks;
     unsigned long int timeout;
     unsigned long int mem_time;
+    counter_unit ticks_since_last_command;
 
 public:
     EncoderCompute(int, int, unsigned long int = DEFAULT_TIMEOUT);
@@ -33,6 +34,8 @@ public:
     float get_delta_distance_mm(void);
     unsigned long int get_timeout(void);
     void set_timeout(unsigned long int);
+    counter_unit get_ticks_since_last_command(void);
+    void reset_ticks_since_last_command(void);
 };
 
 #endif /* ENCODER_COMPUTE */

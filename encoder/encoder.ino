@@ -23,22 +23,24 @@ Moteur moteurL(33,25,32);
 
 double in1 = 0;
 double out1 = 0;
-double set1 = 350;
+double set1 = 2048;
 
 double in2 = 0;
 double out2 = 0;
-double set2 = 350;
+double set2 = 2048;
 
 // PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
 // PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
-PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
-PID p2(&in2, &out2, &set2, 0.31, 0.08, 0, -255, 255, 400);
+// PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
+// PID p2(&in2, &out2, &set2, 0.31, 0.08, 0, -255, 255, 400);
+PID p1(&in1, &out1, &set1, 0.08, 0, 0, -200, 200, 50);
+PID p2(&in2, &out2, &set2, 0.08, 0, 0, -200, 200, 50);
 
 double inp = 0;
 double outp = 0;
 double setp = 400;
 
-PIDPosition pp(&inp,&outp,&setp,0.0009,0,0,-500,500,200);
+// PIDPosition pp(&inp,&outp,&setp,0.0009,0,0,-500,500,200);
 
 
 double ina = 0;
@@ -57,75 +59,29 @@ void setup() {
   moteurR.begin();
   locator.begin();
   delay(1000);
+  encoder_left.reset_ticks_since_last_command();
+  encoder_right.reset_ticks_since_last_command();
 }
 
 void loop() {
   locator.update();
+  in1 = (double)encoder_left.get_ticks_since_last_command();
+  in2 = (double)encoder_right.get_ticks_since_last_command();
 
-  // ina = locator.get_angle_degree();
-  // double t;
-  // if(pa.compute()){
-  //   if (outa>0){
-  //     t = map(outa,0,100,50,100);
-  //   }
-  //   else{
-  //     t = map(outa,-100,0,-100,-50);
-  //   }
 
-  //   moteurL.setTension(t);
-  //   moteurR.setTension(-t);
-  //   // }
-  //   Serial.print("ina: ");
-  //   Serial.println(ina);
-  //   Serial.print("outa: ");
-  //   Serial.println(outa);
-  //   Serial.print("t: ");
-  //   Serial.println(t);
-  //   Serial.println("-------");
-
-   
-  //}
-  //double distLeft = getDist(locator.get_position, )
-  //in1 = 
-
-  setp = dist;
-  inp = getDist(locator.get_position(), start);
-  // Serial.println(locator.get_position().x);
-  // Serial.println(locator.get_position().y);
-  //Serial.println(locator.get_position().x);
-  //Serial.println(encoder_right.get_distance_mm());
-  // moteurL.setTension(100);
-  // moteurR.setTension(0);
-  if(pp.compute()){
-    set1 = outp;
-    set2 = outp;
-
-    Serial.print("inp: ");
-    Serial.println(inp);
-    Serial.print("outp: ");
-    Serial.println(outp);
-    Serial.println("-------");
+  if (p1.compute()) {
+    moteurL.setTensionKickStart(out1);
+    Serial.print("out1: ");
+    Serial.println(out1);
+    Serial.print("in1: ");
+    Serial.println(in1);
+    Serial.println("-----");
   }
-  // set1 = 200;
-  // set2 = 200;
-  bool a = p1.compute();
-  bool b = p2.compute();
-  if (a || b){
-    // Serial.print("in1: ");
-    // Serial.println(in1);
-    // Serial.print("out1: ");
-    // Serial.println(out1);
-    // Serial.print("in2: ");
-    // Serial.println(in2);
-    // Serial.print("out2: ");
-    // Serial.println(out2);
-    moteurL.setTension(out1);
+  if (p2.compute()) {
     moteurR.setTension(out2);
   }
 
-  delay(50);
+
+  delay(25);
 }
 
-double getDist(Position start, Position end){
-    return sqrt(pow(end.x - start.x, 2) + pow(end.y - start.y, 2));
-}

@@ -26,6 +26,8 @@ bool PID::compute(){
         lastTime = now;
         double input = *myInput;
         double error = computeError(*mySetpoint, input);
+        Serial.print("error :");
+        Serial.println(error);
 
         //calculates the proportional part of the PI regulator
         MP = Kp * (error);
@@ -43,7 +45,16 @@ bool PID::compute(){
             }
             else if (MP + MI < min) {
                 MI = min - MP;
-            }}
+            }
+        }
+        else{
+            if (MP > max) {
+                MP = max;
+            }
+            else if (MP < min) {
+                MP = min;
+            }
+        }
 
 
         //output
