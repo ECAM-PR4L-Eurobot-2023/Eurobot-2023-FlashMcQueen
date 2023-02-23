@@ -26,6 +26,8 @@ class PID{
 
         bool isDone();
 
+        void resetDone();
+
     protected:
         
         double Kp;                  // * (P)roportional Tuning Parameter

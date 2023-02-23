@@ -20,14 +20,14 @@ FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle, En
 void FLASH::run() {
     inputDist = (double)encoder_compute1->get_ticks_since_last_command()+(double)encoder_compute2->get_ticks_since_last_command();
     inputAngle = (double)encoder_compute1->get_ticks_since_last_command()-(double)encoder_compute2->get_ticks_since_last_command();
-    Serial.println((double)encoder_compute1->get_ticks_since_last_command());
-    Serial.print("inputAngle :");
-    Serial.println(inputAngle);
-    Serial.print("inputDist :");
-    Serial.println(inputDist);
-    Serial.println("dist");
+    // Serial.println((double)encoder_compute1->get_ticks_since_last_command());
+    // Serial.print("inputAngle :");
+    // Serial.println(inputAngle);
+    // Serial.print("inputDist :");
+    // Serial.println(inputDist);
+    // Serial.println("dist");
     bool distCompute = PID_dist.compute();
-    Serial.println("angle");
+    // Serial.println("angle");
     bool angleCompute = PID_angle.compute();
     if (distCompute || angleCompute) {
         pwmg = (outputDist + outputAngle)/2;
@@ -82,4 +82,9 @@ void FLASH::set_dist(double dist){
 
 bool FLASH::isDone(){
     return PID_dist.isDone() && PID_angle.isDone();
+}
+
+void FLASH::resetDone(){
+    PID_dist.resetDone();
+    PID_angle.resetDone();
 }

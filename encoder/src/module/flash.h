@@ -18,6 +18,8 @@ public:
     void run();
 
     bool isDone();
+
+    void resetDone();
 private:
 
     PID PID_dist, PID_angle;

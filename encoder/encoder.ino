@@ -9,6 +9,11 @@
 #include "src/module/pidPosition.h"
 #include "src/module/flash.h"
 
+#include <ros.h>
+#include <std_msgs/Int8.h>
+#include <std_msgs/Int64.h>
+#include "src/module/displacement.h"
+
 #define COMPUTE_TIMEOUT (20)
 
 EncoderCompute encoder_left(35, 34, COMPUTE_TIMEOUT);
@@ -20,7 +25,8 @@ Position position{0, 0, 0, 0};
 Moteur moteurR(26,27,14);
 Moteur moteurL(33,25,32);
 
-
+double mouvementsAngle[3];
+double mouvementsDist[3];
 
 double in1 = 0;
 double out1 = 0;
@@ -30,6 +36,9 @@ double in2 = 0;
 double out2 = 0;
 double set2 = 2048;
 
+int counter = 0;
+bool start = false;
+
 // PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
 // PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
 PID p1(&in1, &out1, &set1, 0.08, 0.008, 0, -200, 200, 50,10);
@@ -37,6 +46,33 @@ PID p2(&in2, &out2, &set2, 0.08, 0.008, 0, -200, 200, 50,10);
 
 // FLASH flash(0.08, 0.008, 0.17, 0.008, &encoder_left, &encoder_right, moteurL, moteurR); // nice for small setpoints (2048 45)
 FLASH flash(0.08, 0.025, 0.10, 0.025, &encoder_left, &encoder_right, moteurL, moteurR);
+
+
+
+void setDisplacement(const msgs::Displacement& displacement) {
+  mouvementsAngle[0] = (double)displacement.angle_start;
+  mouvementsAngle[1] = (double)0;
+  mouvementsAngle[2] =(double) displacement.angle_end;
+
+  mouvementsDist[0] = (double)0;
+  mouvementsDist[1] = (double)displacement.distance;
+  mouvementsDist[2] = (double)0;
+
+Serial.println(displacement.angle_start);
+Serial.println(displacement.distance);
+Serial.println(displacement.angle_end);
+  // flash.set_angle(mouvementsAngle[0]);
+  // flash.set_dist(mouvementsDist[0]);
+
+  start = true;
+}
+
+
+
+
+
+ros::Subscriber<msgs::Displacement> sub1("/robot/data/displacement/set", &setDisplacement);
+ros::NodeHandle nh1;
 
 void setup() {
 	Serial.begin(115200);
@@ -47,48 +83,34 @@ void setup() {
   encoder_left.reset_ticks_since_last_command();
   encoder_right.reset_ticks_since_last_command();
   flash.set_angle(0);
-  flash.set_dist(2048*10);
+  flash.set_dist(0);
+
+  nh1.getHardware()->setBaud(115200);
+
+    // put your setup code here, to run once:
+  nh1.initNode();
+
+  nh1.subscribe(sub1);
+
 }
 
 void loop() {
+  nh1.spinOnce();
   locator.update();
-  // Serial.println((double)encoder_left.get_ticks_since_last_command());
-  // in2 = (double)encoder_right.get_ticks_since_last_command();
-
-
-  // if (p1.compute()) {
-  //   if (encoder_left.get_speed_tick_s()<10 && encoder_left.get_speed_tick_s()>-10 ){
-  //   moteurL.setTensionKickStart(out1);
-  //   }
-  // else{
-  //   moteurL.setTension(out1);
-  // }
-  //   Serial.print("out1: ");
-  //   Serial.println(out1);
-  //   Serial.print("in1: ");
-  //   Serial.println(in1);
-  //   Serial.println("-----");
-  // }
-  // if (p2.compute()) {
-  //   if (encoder_right.get_speed_tick_s()<10 && encoder_right.get_speed_tick_s()>-10 ){
-  //   moteurR.setTensionKickStart(out2);
-  //   }
-  // else{
-  //   moteurR.setTension(out2);
-  // }
-  // }
-
   flash.run();
-
-  if (flash.isDone()){
-    flash.set_angle(180);
-    flash.set_dist(0);
+  // Serial.print("counter ");
+  // Serial.println(counter);
+  // Serial.println(mouvementsAngle[counter]);
+  // Serial.println(mouvementsDist[counter]);
+  if (start && flash.isDone() && counter <3){
+    flash.set_angle(mouvementsAngle[counter]);
+    flash.set_dist(mouvementsDist[counter]);
     encoder_left.reset_ticks_since_last_command();
     encoder_right.reset_ticks_since_last_command();
+    flash.resetDone();
+    counter++;
   }
 
-  // moteurL.setTensionKickStart(40);
-  // moteurR.setTensionKickStart(40);
   delay(25);
 }
 
