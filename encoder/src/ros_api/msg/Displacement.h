@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#include "encoder/msg.h"
+#include <ros.h>
 
 namespace msgs
 {
