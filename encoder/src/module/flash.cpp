@@ -7,7 +7,7 @@
 
 FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle, EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2):
     encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),
-    PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-400,400,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-400,400,50, 50)){
+    PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-255,255,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-255,255,50, 50)){
         setPointAngle=0;
         setPointDist=0;
         inputAngle=0;
@@ -54,13 +54,13 @@ void FLASH::run() {
         // Serial.println(pwmg);
         // Serial.print("pwmd :");
         // Serial.println(pwmd);
-        if (encoder_compute1->get_speed_tick_s()<10 && encoder_compute1->get_speed_tick_s()>-10 ){
+        if (encoder_compute1->get_speed_tick_s()<10 && encoder_compute1->get_speed_tick_s()>-10 && pwmg<60){
             moteur1.setTensionKickStart(pwmg,5);
         }
         else{
             moteur1.setTension(pwmg);
         }
-        if (encoder_compute2->get_speed_tick_s()<10 && encoder_compute2->get_speed_tick_s()>-10 ){
+        if (encoder_compute2->get_speed_tick_s()<10 && encoder_compute2->get_speed_tick_s()>-10 && pwmd<60){
             moteur2.setTensionKickStart(pwmd,5);
         }
         else{

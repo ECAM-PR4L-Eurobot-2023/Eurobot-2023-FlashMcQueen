@@ -99,9 +99,9 @@ void updateSetPoints(){
     flash.resetDone();
     counter++;
   }
-  else if(counter >= 3){
+  else if(counter >= 3 && flash.isDone()){
     counter = 0;
     rosApi->pub_distance_reached();
-    new_displacement=0;
+    new_displacement=false;
   }
 }
