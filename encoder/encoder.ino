@@ -80,7 +80,6 @@ void setup() {
   flash.set_angle(0);
   flash.set_dist(0);
 
-  
 }
 
 void loop() {
