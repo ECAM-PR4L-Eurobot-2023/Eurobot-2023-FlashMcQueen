@@ -79,6 +79,8 @@ void setup() {
   encoder_right.reset_ticks_since_last_command();
   flash.set_angle(0);
   flash.set_dist(0);
+
+  
 }
 
 void loop() {
