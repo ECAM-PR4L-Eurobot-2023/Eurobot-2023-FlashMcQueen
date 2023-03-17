@@ -55,20 +55,45 @@ void FLASH::run() {
         // Serial.println(pwmg);
         // Serial.print("pwmd :");
         // Serial.println(pwmd);
-        if (encoder_compute1->get_speed_tick_s()<10 && encoder_compute1->get_speed_tick_s()>-10 && pwmg<60){
-            moteur1.setTensionKickStart(pwmg,5);
-        }
-        else{
-            moteur1.setTension(pwmg);
-        }
-        if (encoder_compute2->get_speed_tick_s()<10 && encoder_compute2->get_speed_tick_s()>-10 && pwmd<60){
-            moteur2.setTensionKickStart(pwmd,5);
-        }
-        else{
-            moteur2.setTension(pwmd);
-        }
+        // if (encoder_compute1->get_speed_tick_s()<10 && encoder_compute1->get_speed_tick_s()>-10 && pwmg<60){
+        //     moteur1.setTensionKickStart(pwmg,5);
+        // }
+        // else{
+        //     moteur1.setTension(pwmg);
+        // }
+        // if (encoder_compute2->get_speed_tick_s()<10 && encoder_compute2->get_speed_tick_s()>-10 && pwmd<60){
+        //     moteur2.setTensionKickStart(pwmd,5);
+        // }
+        // else{
+        //     moteur2.setTension(pwmd);
+        // }
         // moteur1.setTension(pwmg);
         // moteur2.setTension(pwmd);
+
+        double outA = 0;
+        double outB = 0;
+        
+        double map_val =(encoder_compute1->get_speed_tick_s()+encoder_compute2->get_speed_tick_s())/2-40;
+        if (pwmg ==0){
+            outA = pwmg;
+        }
+        else if (pwmg>0){
+            outA = map(pwmg,0,255,map_val,255);
+        }
+        else{
+            outA = map(pwmg,-255,0,-255,-map_val);
+        }
+        if ( pwmd == 0){
+            outB = pwmd;
+        }
+        else if (pwmd>0){
+            outB = map(pwmd,0,255,map_val,255);
+        }
+        else{
+            outB = map(pwmd,-255,0,-255,-map_val);
+        }
+        moteur1.setTension(outA);
+        moteur2.setTension(outB);
     }
 
 }
