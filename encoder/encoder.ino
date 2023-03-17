@@ -80,6 +80,20 @@ void setup() {
   flash.set_angle(0);
   flash.set_dist(0);
 
+  mouvementsAngle[0] = (double)0;
+  mouvementsAngle[1] = (double)0;
+  mouvementsAngle[2] =(double) 90;
+
+  mouvementsDist[0] = (double)0;
+  mouvementsDist[1] = (double)0;
+  mouvementsDist[2] = (double)0;
+  // mouvements[0] = (double)displacement.angle_start;
+  // mouvements[1] = (double)displacement.distance;
+  // mouvements[2] = (double)displacement.angle_end;
+
+  new_displacement = true;
+
+
 }
 
 void loop() {
@@ -87,7 +101,7 @@ void loop() {
   locator.update();
   flash.run();
   updateSetPoints();
-
+  Serial.println(locator.get_angle_degree());
   delay(25);
 }
 

@@ -2,12 +2,13 @@
 #include <Arduino.h>
 #include <math.h>
 #include "encoder_compute.h"
+#include "locator.h"  //to get wheels to center definition
 
-#define WHEELS_TO_CENTER (152)  // mm
+// #define WHEELS_TO_CENTER (120)  // mm
 
 FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle, EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2):
     encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),
-    PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-255,255,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-255,255,50, 50)){
+    PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-255,255,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-255,255,50, 30)){
         setPointAngle=0;
         setPointDist=0;
         inputAngle=0;
@@ -25,9 +26,9 @@ void FLASH::run() {
     // Serial.println(inputAngle);
     // Serial.print("inputDist :");
     // Serial.println(inputDist);
-    // Serial.println("dist");
+    Serial.println("dist");
     bool distCompute = PID_dist.compute();
-    // Serial.println("angle");
+    Serial.println("angle");
     bool angleCompute = PID_angle.compute();
     if (distCompute || angleCompute) {
         pwmg = (outputDist + outputAngle)/2;

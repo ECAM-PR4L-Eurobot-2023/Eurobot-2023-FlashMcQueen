@@ -37,8 +37,12 @@ bool PID::compute(){
         else{
             done = 0;
         }
-        // Serial.print("error :");
-        // Serial.println(error);
+        Serial.print("error :");
+        Serial.println(error);
+        Serial.print("set :");
+        Serial.println(*mySetpoint);
+        Serial.print("in :");
+        Serial.println(input);
 
         //calculates the proportional part of the PI regulator
         MP = Kp * (error);
