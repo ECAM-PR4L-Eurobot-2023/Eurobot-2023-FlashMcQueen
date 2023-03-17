@@ -3,7 +3,7 @@
 #include <driver/gpio.h>
 
 Encoder::Encoder(int pin_a, int pin_b)
-  : encoder_a{ (gpio_num_t)pin_a }, encoder_b{ (gpio_num_t)pin_b } {}
+  : encoder_b{ (gpio_num_t)pin_a }, encoder_a{ (gpio_num_t)pin_b } {}
 
 void isr_a(void *arg) {
   if (arg == NULL) {
