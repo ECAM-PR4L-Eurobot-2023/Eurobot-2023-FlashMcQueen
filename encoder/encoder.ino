@@ -48,7 +48,9 @@ PID p1(&in1, &out1, &set1, 0.08, 0.008, 0, -200, 200, 50,10);
 PID p2(&in2, &out2, &set2, 0.08, 0.008, 0, -200, 200, 50,10);
 
 // FLASH flash(0.08, 0.008, 0.17, 0.008, &encoder_left, &encoder_right, moteurL, moteurR); // nice for small setpoints (2048 45)
-FLASH flash(0.08, 0.025, 0.10, 0.025, &encoder_left, &encoder_right, moteurL, moteurR);
+// FLASH flash(0.08, 0.025, 0.10, 0.025, &encoder_left, &encoder_right, moteurL, moteurR);
+FLASH flash(0.08, 0.035, 0.30, 0.025, &encoder_left, &encoder_right, moteurL, moteurR);
+
 
 void setDisplacement(const msgs::Displacement& displacement) {
   mouvementsAngle[0] = (double)displacement.angle_start;
@@ -82,18 +84,12 @@ void setup() {
 
   mouvementsAngle[0] = (double)0;
   mouvementsAngle[1] = (double)0;
-  mouvementsAngle[2] =(double) 90;
+  mouvementsAngle[2] =(double) 0;
 
   mouvementsDist[0] = (double)0;
-  mouvementsDist[1] = (double)0;
+  mouvementsDist[1] = (double)19000;
   mouvementsDist[2] = (double)0;
-  // mouvements[0] = (double)displacement.angle_start;
-  // mouvements[1] = (double)displacement.distance;
-  // mouvements[2] = (double)displacement.angle_end;
-
   new_displacement = true;
-
-
 }
 
 void loop() {
@@ -101,7 +97,11 @@ void loop() {
   locator.update();
   flash.run();
   updateSetPoints();
-  Serial.println(locator.get_angle_degree());
+  // Serial.println(locator.get_angle_degree());*
+  // Serial.print("-----------------");
+  // Serial.println(locator.get_position().x);
+  // Serial.println(locator.get_position().y);
+
   delay(25);
 }
 

@@ -14,7 +14,7 @@ FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle, En
         inputAngle=0;
         inputDist=0;
         limPwmD=200;
-        limPwmG=200;
+        limPwmG=210;
     }
 
 
@@ -26,20 +26,26 @@ void FLASH::run() {
     // Serial.println(inputAngle);
     // Serial.print("inputDist :");
     // Serial.println(inputDist);
-    Serial.println("dist");
+    // Serial.println("dist");
     bool distCompute = PID_dist.compute();
-    Serial.println("angle");
+    // Serial.println("angle");
     bool angleCompute = PID_angle.compute();
     if (distCompute || angleCompute) {
         pwmg = (outputDist + outputAngle)/2;
         pwmd = (outputDist - outputAngle)/2;
         difPwm = pwmg - pwmd;
-        if (abs(difPwm) > 50) {
+        Serial.println(difPwm);
+        if (abs(difPwm) > 6) {
+            Serial.println("difPwm--------------------------------------------------------");
             if (difPwm > 0) {
                 limPwmG = 240;
             } else {
                 limPwmD = 240;
             }
+        }
+        else{
+            limPwmG = 210;
+            limPwmD = 200;
         }
         if (pwmg > limPwmG) {
             pwmg = limPwmG;
@@ -73,7 +79,9 @@ void FLASH::run() {
         double outA = 0;
         double outB = 0;
         
-        double map_val =(encoder_compute1->get_speed_tick_s()+encoder_compute2->get_speed_tick_s())/2-40;
+        double map_val =map((encoder_compute1->get_speed_tick_s()+encoder_compute2->get_speed_tick_s())/2, 0,1300, 50,0);
+        // Serial.print("map_val :");
+        // Serial.println(map_val);
         if (pwmg ==0){
             outA = pwmg;
         }
