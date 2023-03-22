@@ -14,6 +14,7 @@
 #include "src/ros_api/ros_api.h"
 #include "src/ros_api/topics.h"
 
+
 #define COMPUTE_TIMEOUT (20)
 
 RosApiCallbacks callbacks {};
@@ -68,41 +69,54 @@ void setDisplacement(const msgs::Displacement& displacement) {
 }
 
 
+#define pin1 19
+#define pin2 18
+
 void setup() {
 	Serial.begin(115200);
-  moteurL.begin();
-  moteurR.begin();
-  locator.begin();
-  callbacks.on_set_displacement = setDisplacement;
-  rosApi = new RosApi(&callbacks);
-  rosApi->begin();
-  delay(1000);
-  encoder_left.reset_ticks_since_last_command();
-  encoder_right.reset_ticks_since_last_command();
-  flash.set_angle(0);
-  flash.set_dist(0);
 
-  mouvementsAngle[0] = (double)0;
-  mouvementsAngle[1] = (double)0;
-  mouvementsAngle[2] =(double) 0;
 
-  mouvementsDist[0] = (double)0;
-  mouvementsDist[1] = (double)19000;
-  mouvementsDist[2] = (double)0;
-  new_displacement = true;
+
+  // moteurL.begin();
+  // moteurR.begin();
+  // locator.begin();
+  // callbacks.on_set_displacement = setDisplacement;
+  // rosApi = new RosApi(&callbacks);
+  // rosApi->begin();
+  // delay(1000);
+  // encoder_left.reset_ticks_since_last_command();
+  // encoder_right.reset_ticks_since_last_command();
+  // flash.set_angle(0);
+  // flash.set_dist(0);
+
+  // mouvementsAngle[0] = (double)0;
+  // mouvementsAngle[1] = (double)0;
+  // mouvementsAngle[2] =(double) 0;
+
+  // mouvementsDist[0] = (double)0;
+  // mouvementsDist[1] = (double)19000;
+  // mouvementsDist[2] = (double)0;
+  // new_displacement = true;
+
+  pinMode(pin1,OUTPUT);
+  pinMode(pin2,OUTPUT);
 }
 
 void loop() {
-  rosApi->run();
-  locator.update();
-  flash.run();
-  updateSetPoints();
+  // rosApi->run();
+  // locator.update();
+  // flash.run();
+  // updateSetPoints();
   // Serial.println(locator.get_angle_degree());*
   // Serial.print("-----------------");
   // Serial.println(locator.get_position().x);
   // Serial.println(locator.get_position().y);
 
-  delay(25);
+
+  setTension(15);
+
+
+  delay(1000);
 }
 
 void updateSetPoints(){
@@ -119,4 +133,19 @@ void updateSetPoints(){
     rosApi->pub_distance_reached();
     new_displacement=false;
   }
+}
+
+void setTension(int tension) {
+    if (tension > 0) {
+        digitalWrite(pin1, LOW);
+        analogWrite(pin2, tension);
+    }
+    else if (tension < 0) {
+        digitalWrite(pin1, HIGH);
+        analogWrite(pin2, LOW);
+    }
+    else {
+        digitalWrite(pin1, LOW);
+        digitalWrite(pin2, LOW);
+    }
 }

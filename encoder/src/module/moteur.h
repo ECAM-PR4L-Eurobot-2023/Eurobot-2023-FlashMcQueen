@@ -4,14 +4,14 @@
 class Moteur {
 
 public:
-    Moteur(int, int, int); //pinA, pinB, pinE
+    Moteur(int, int); //pinA, pinB
 
     void setTension(int); //set tension from -255 to 255 neg tension goes backwards
     void setTensionKickStart(int,int = 10);
     void begin(void);
 
 private:
-    int pinA, pinB, pinE;
+    int pinA, pinB;
 
 };
 
