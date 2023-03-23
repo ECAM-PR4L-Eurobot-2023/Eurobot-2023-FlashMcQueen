@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <driver/gpio.h>
+#include <Wire.h>
 
 #include "src/module/encoder_compute.h"
 #include "src/module/locator.h"
@@ -14,10 +15,15 @@
 #include "src/ros_api/ros_api.h"
 #include "src/ros_api/topics.h"
 
-
 #define COMPUTE_TIMEOUT (20)
 
-RosApiCallbacks callbacks {};
+#define pinPWM 26
+#define pinPWM2 25
+
+#define pinPWM3 32
+#define pinPWM4 33
+
+RosApiCallbacks callbacks{};
 RosApi *rosApi;
 
 EncoderCompute encoder_left(35, 34, COMPUTE_TIMEOUT);
@@ -26,8 +32,8 @@ Locator locator(&encoder_left, &encoder_right);
 
 Position position{0, 0, 0, 0};
 
-Moteur moteurR(26,27,14);
-Moteur moteurL(33,25,32);
+Moteur moteurR(pinPWM, pinPWM2);
+Moteur moteurL(pinPWM3, pinPWM4);
 
 double mouvementsAngle[3];
 double mouvementsDist[3];
@@ -45,18 +51,18 @@ bool new_displacement = false;
 
 // PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
 // PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
-PID p1(&in1, &out1, &set1, 0.08, 0.008, 0, -200, 200, 50,10);
-PID p2(&in2, &out2, &set2, 0.08, 0.008, 0, -200, 200, 50,10);
+PID p1(&in1, &out1, &set1, 0.08, 0.008, 0, -200, 200, 50, 10);
+PID p2(&in2, &out2, &set2, 0.08, 0.008, 0, -200, 200, 50, 10);
 
 // FLASH flash(0.08, 0.008, 0.17, 0.008, &encoder_left, &encoder_right, moteurL, moteurR); // nice for small setpoints (2048 45)
 // FLASH flash(0.08, 0.025, 0.10, 0.025, &encoder_left, &encoder_right, moteurL, moteurR);
-FLASH flash(0.08, 0.035, 0.30, 0.025, &encoder_left, &encoder_right, moteurL, moteurR);
+FLASH flash(0.08, 0.035, 0.30, 0.025, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
-
-void setDisplacement(const msgs::Displacement& displacement) {
+void setDisplacement(const msgs::Displacement &displacement)
+{
   mouvementsAngle[0] = (double)displacement.angle_start;
   mouvementsAngle[1] = (double)0;
-  mouvementsAngle[2] =(double) displacement.angle_end;
+  mouvementsAngle[2] = (double)displacement.angle_end;
 
   mouvementsDist[0] = (double)0;
   mouvementsDist[1] = (double)displacement.distance;
@@ -68,59 +74,59 @@ void setDisplacement(const msgs::Displacement& displacement) {
   new_displacement = true;
 }
 
+// #define pin1 19
+// #define pin2 18
 
-#define pin1 19
-#define pin2 18
+void setup()
+{
+  Serial.begin(115200);
+  // Wire.begin();
 
-void setup() {
-	Serial.begin(115200);
+  moteurL.begin();
+  moteurR.begin();
+  locator.begin();
+  callbacks.on_set_displacement = setDisplacement;
+  rosApi = new RosApi(&callbacks);
+  rosApi->begin();
+  delay(1000);
+  encoder_left.reset_ticks_since_last_command();
+  encoder_right.reset_ticks_since_last_command();
+  flash.set_angle(0);
+  flash.set_dist(0);
 
+  mouvementsAngle[0] = (double)0;
+  mouvementsAngle[1] = (double)0;
+  mouvementsAngle[2] =(double) 45;
 
-
-  // moteurL.begin();
-  // moteurR.begin();
-  // locator.begin();
-  // callbacks.on_set_displacement = setDisplacement;
-  // rosApi = new RosApi(&callbacks);
-  // rosApi->begin();
-  // delay(1000);
-  // encoder_left.reset_ticks_since_last_command();
-  // encoder_right.reset_ticks_since_last_command();
-  // flash.set_angle(0);
-  // flash.set_dist(0);
-
-  // mouvementsAngle[0] = (double)0;
-  // mouvementsAngle[1] = (double)0;
-  // mouvementsAngle[2] =(double) 0;
-
-  // mouvementsDist[0] = (double)0;
-  // mouvementsDist[1] = (double)19000;
-  // mouvementsDist[2] = (double)0;
-  // new_displacement = true;
-
-  pinMode(pin1,OUTPUT);
-  pinMode(pin2,OUTPUT);
+  mouvementsDist[0] = (double)0;
+  mouvementsDist[1] = (double)19000;
+  mouvementsDist[2] = (double)0;
+  new_displacement = true;
 }
 
-void loop() {
-  // rosApi->run();
-  // locator.update();
-  // flash.run();
-  // updateSetPoints();
+void loop()
+{
+  rosApi->run();
+  locator.update();
+  flash.run();
+  updateSetPoints();
   // Serial.println(locator.get_angle_degree());*
   // Serial.print("-----------------");
   // Serial.println(locator.get_position().x);
   // Serial.println(locator.get_position().y);
+  // Wire.beginTransmission(0xB0);
+  // Wire.write(0x02);
+  // Wire.write(0x255);
+  // Wire.endTransmission();
 
-
-  setTension(15);
-
-
-  delay(1000);
+  // digitalWrite(pinPWM, LOW);
+  // analogWrite(pinPWM2, 100);
 }
 
-void updateSetPoints(){
-  if(new_displacement&& flash.isDone() && counter <3){
+void updateSetPoints()
+{
+  if (new_displacement && flash.isDone() && counter < 3)
+  {
     flash.set_angle(mouvementsAngle[counter]);
     flash.set_dist(mouvementsDist[counter]);
     encoder_left.reset_ticks_since_last_command();
@@ -128,24 +134,18 @@ void updateSetPoints(){
     flash.resetDone();
     counter++;
   }
-  else if(counter >= 3 && flash.isDone()){
+  else if (counter >= 3 && flash.isDone())
+  {
     counter = 0;
     rosApi->pub_distance_reached();
-    new_displacement=false;
+    new_displacement = false;
   }
 }
 
-void setTension(int tension) {
-    if (tension > 0) {
-        digitalWrite(pin1, LOW);
-        analogWrite(pin2, tension);
-    }
-    else if (tension < 0) {
-        digitalWrite(pin1, HIGH);
-        analogWrite(pin2, LOW);
-    }
-    else {
-        digitalWrite(pin1, LOW);
-        digitalWrite(pin2, LOW);
-    }
-}
+// void setTension(int tension) {
+//     analogWrite(pinPWM,map(tension, -255, 255, 51, 102));
+//     analogWrite(pinPWM2,map(tension, -255, 255, 51, 102));
+// }
+
+
+

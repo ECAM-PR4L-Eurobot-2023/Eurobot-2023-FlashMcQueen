@@ -10,7 +10,7 @@
 class FLASH {
 
 public:
-    FLASH(double, double, double, double, EncoderCompute *, EncoderCompute *, Moteur, Moteur);
+    FLASH(double, double, double, double, EncoderCompute *, EncoderCompute *, Moteur, Moteur,bool);
 
     void set_dist(double);
     void set_angle(double);
@@ -39,6 +39,7 @@ private:
     double pwmg, pwmd;
     double limPwmG, limPwmD, difPwm;
 
+    bool dynamicMapping;
 };
 
 #endif
