@@ -12,6 +12,8 @@
 #include "msg/PidParameters.h"
 #include "msg/Position.h"
 #include "topics.h"
+#include "msg/Coordinate.h"
+#include "../data/Coordinates.h"
 
 #define DEFAULT_BAUDRATE (115200)
 
@@ -37,7 +39,7 @@ class RosApi {
     // Publisher messages
     std_msgs::Empty distance_reached_msg;
     std_msgs::Int16 urgency_stop_msg;
-    msgs::Displacement data_all_msg;
+    msgs::Coordinate data_all_msg;
 
     // Publishers
     ros::Publisher distance_reached_pub;
@@ -62,7 +64,7 @@ public:
     void run(void);
     void pub_distance_reached(void);
     void pub_urgency_stop(int);
-    void pub_data_all(data::Displacement);
+    void pub_data_all(data::Coordinates);
 };
 
 #endif /* ROS_API_H */

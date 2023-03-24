@@ -3,7 +3,7 @@
 #include <driver/gpio.h>
 
 Encoder::Encoder(int pin_a, int pin_b)
-  : encoder_b{ (gpio_num_t)pin_a }, encoder_a{ (gpio_num_t)pin_b } {}
+  : encoder_b{ (gpio_num_t)pin_a }, encoder_a{ (gpio_num_t)pin_b } {counter_since_last=0;}
 
 void isr_a(void *arg) {
   if (arg == NULL) {
@@ -62,6 +62,10 @@ void Encoder::reset_counter(void) {
 
 counter_unit Encoder::get_counter(void) {
   return counter;
+}
+
+counter_unit Encoder::get_counter_since_last(void){
+  return counter_since_last;
 }
 
 void Encoder::increment_counter(void) {

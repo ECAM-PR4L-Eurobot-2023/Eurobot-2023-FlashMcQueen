@@ -30,7 +30,7 @@ EncoderCompute encoder_left(35, 34, COMPUTE_TIMEOUT);
 EncoderCompute encoder_right(23, 22, COMPUTE_TIMEOUT);
 Locator locator(&encoder_left, &encoder_right);
 
-Position position{0, 0, 0, 0};
+// Position position{0, 0, 0, 0};
 
 Moteur moteurR(pinPWM, pinPWM2);
 Moteur moteurL(pinPWM3, pinPWM4);
@@ -38,24 +38,12 @@ Moteur moteurL(pinPWM3, pinPWM4);
 double mouvementsAngle[3];
 double mouvementsDist[3];
 
-double in1 = 0;
-double out1 = 0;
-double set1 = 2048;
-
-double in2 = 0;
-double out2 = 0;
-double set2 = 2048;
-
 int counter = 0;
 bool new_displacement = false;
 
-// PID p1(&in1, &out1, &set1, 0.30, 0.08, 0, -255, 255, 400);
-// PID p2(&in2, &out2, &set2, 0.30, 0.08, 0, -255, 255, 400);
-PID p1(&in1, &out1, &set1, 0.08, 0.008, 0, -200, 200, 50, 10);
-PID p2(&in2, &out2, &set2, 0.08, 0.008, 0, -200, 200, 50, 10);
+ unsigned long last_time = 0;
 
-// FLASH flash(0.08, 0.008, 0.17, 0.008, &encoder_left, &encoder_right, moteurL, moteurR); // nice for small setpoints (2048 45)
-// FLASH flash(0.08, 0.025, 0.10, 0.025, &encoder_left, &encoder_right, moteurL, moteurR);
+
 FLASH flash(0.08, 0.035, 0.30, 0.025, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
 void setDisplacement(const msgs::Displacement &displacement)
@@ -67,20 +55,15 @@ void setDisplacement(const msgs::Displacement &displacement)
   mouvementsDist[0] = (double)0;
   mouvementsDist[1] = (double)displacement.distance;
   mouvementsDist[2] = (double)0;
-  // mouvements[0] = (double)displacement.angle_start;
-  // mouvements[1] = (double)displacement.distance;
-  // mouvements[2] = (double)displacement.angle_end;
 
   new_displacement = true;
 }
 
-// #define pin1 19
-// #define pin2 18
 
 void setup()
 {
   Serial.begin(115200);
-  // Wire.begin();
+
 
   moteurL.begin();
   moteurR.begin();
@@ -110,17 +93,11 @@ void loop()
   locator.update();
   flash.run();
   updateSetPoints();
-  // Serial.println(locator.get_angle_degree());*
-  // Serial.print("-----------------");
-  // Serial.println(locator.get_position().x);
-  // Serial.println(locator.get_position().y);
-  // Wire.beginTransmission(0xB0);
-  // Wire.write(0x02);
-  // Wire.write(0x255);
-  // Wire.endTransmission();
+  if (millis()- last_time>50){
+    last_time = millis();
+    send_data();
+  }
 
-  // digitalWrite(pinPWM, LOW);
-  // analogWrite(pinPWM2, 100);
 }
 
 void updateSetPoints()
@@ -129,8 +106,8 @@ void updateSetPoints()
   {
     flash.set_angle(mouvementsAngle[counter]);
     flash.set_dist(mouvementsDist[counter]);
-    encoder_left.reset_ticks_since_last_command();
-    encoder_right.reset_ticks_since_last_command();
+    // encoder_left.reset_ticks_since_last_command();
+    // encoder_right.reset_ticks_since_last_command();
     flash.resetDone();
     counter++;
   }
@@ -138,8 +115,14 @@ void updateSetPoints()
   {
     counter = 0;
     rosApi->pub_distance_reached();
+    send_data();
     new_displacement = false;
   }
+}
+
+void send_data(){
+    Position position = locator.get_position();
+    rosApi->pub_data_all(data::Coordinates{(float)position.x, (float)position.y, (float)position.angle_degree});
 }
 
 // void setTension(int tension) {

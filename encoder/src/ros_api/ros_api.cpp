@@ -53,9 +53,9 @@ void RosApi::pub_urgency_stop(int urgency_stop) {
     urgency_stop_pub.publish(&urgency_stop_msg);
 }
 
-void RosApi::pub_data_all(data::Displacement displacement) {
-    data_all_msg.angle_start = displacement.angle_start;
-    data_all_msg.angle_end = displacement.angle_end;
-    data_all_msg.distance = displacement.distance;
+void RosApi::pub_data_all(data::Coordinates coordinates) {
+    data_all_msg.x = coordinates.x;
+    data_all_msg.y = coordinates.y;
+    data_all_msg.angle = coordinates.angle;
     data_all_pub.publish(&data_all_msg);
 }

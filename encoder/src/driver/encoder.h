@@ -14,6 +14,7 @@ private:
     const SingleEncoder encoder_a;
     const SingleEncoder encoder_b;
     volatile counter_unit counter;
+    counter_unit counter_since_last;
 
 public:
     // Constructor
@@ -22,6 +23,7 @@ public:
     void begin(void);
     void reset_counter(void);
     counter_unit get_counter(void);
+    counter_unit get_counter_since_last(void);
     void increment_counter(void);
     void decrement_counter(void);
     const SingleEncoder *get_encoder_a(void);
