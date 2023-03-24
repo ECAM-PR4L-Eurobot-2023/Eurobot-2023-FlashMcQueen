@@ -44,7 +44,7 @@ bool new_displacement = false;
  unsigned long last_time = 0;
 
 
-FLASH flash(0.08, 0.035, 0.30, 0.025, &encoder_left, &encoder_right, moteurL, moteurR, 0);
+FLASH flash(0.085, 0.04, 0.30, 0.035, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
 void setDisplacement(const msgs::Displacement &displacement)
 {
@@ -53,12 +53,16 @@ void setDisplacement(const msgs::Displacement &displacement)
   mouvementsAngle[2] = (double)displacement.angle_end;
 
   mouvementsDist[0] = (double)0;
-  mouvementsDist[1] = (double)displacement.distance;
+  mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
   mouvementsDist[2] = (double)0;
 
   new_displacement = true;
 }
 
+
+void setPosition(const msgs::Position &position){
+  locator.set_xy(position.x, position.y);
+}
 
 void setup()
 {
@@ -69,6 +73,7 @@ void setup()
   moteurR.begin();
   locator.begin();
   callbacks.on_set_displacement = setDisplacement;
+  callbacks.on_set_position = setPosition;
   rosApi = new RosApi(&callbacks);
   rosApi->begin();
   delay(1000);
@@ -76,15 +81,6 @@ void setup()
   encoder_right.reset_ticks_since_last_command();
   flash.set_angle(0);
   flash.set_dist(0);
-
-  mouvementsAngle[0] = (double)0;
-  mouvementsAngle[1] = (double)0;
-  mouvementsAngle[2] =(double) 45;
-
-  mouvementsDist[0] = (double)0;
-  mouvementsDist[1] = (double)19000;
-  mouvementsDist[2] = (double)0;
-  new_displacement = true;
 }
 
 void loop()
@@ -106,8 +102,8 @@ void updateSetPoints()
   {
     flash.set_angle(mouvementsAngle[counter]);
     flash.set_dist(mouvementsDist[counter]);
-    // encoder_left.reset_ticks_since_last_command();
-    // encoder_right.reset_ticks_since_last_command();
+    encoder_left.reset_ticks_since_last_command();
+    encoder_right.reset_ticks_since_last_command();
     flash.resetDone();
     counter++;
   }

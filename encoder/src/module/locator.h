@@ -31,6 +31,7 @@ public:
     float get_angle_degree(void);
     Position get_position(void);
     double get_delta_distance(void);
+    void set_xy(double, double);
 };
 
 #endif /* LOCATOR_H */

@@ -67,3 +67,8 @@ Position Locator::get_position(void) {
 double Locator::get_delta_distance(void) {
     return delta_distance;
 }
+
+void Locator::set_xy(double x, double y){
+    position.x = x;
+    position.y = y;
+}
