@@ -20,7 +20,7 @@ void Locator::begin(void) {
 
 bool Locator::update(void) {
     if ((millis() - mem_time) > timeout) {
-        timeout = millis();
+        mem_time = millis();
 
         // Update the encoder state
         encoder_left->update();

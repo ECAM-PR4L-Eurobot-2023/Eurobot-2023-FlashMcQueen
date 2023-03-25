@@ -121,3 +121,8 @@ bool PID::isDone(){
 void PID::resetDone(){
     done = 0;
 }
+
+void PID::setMinMax(double val){
+    max = val;
+    min = -val;
+}

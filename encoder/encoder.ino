@@ -49,7 +49,7 @@ FLASH flash(0.085, 0.04, 0.30, 0.035, &encoder_left, &encoder_right, moteurL, mo
 void setDisplacement(const msgs::Displacement &displacement)
 {
   mouvementsAngle[0] = (double)displacement.angle_start;
-  mouvementsAngle[1] = (double)0;
+  mouvementsAngle[1] = (double)displacement.angle_start;
   mouvementsAngle[2] = (double)displacement.angle_end;
 
   mouvementsDist[0] = (double)0;
@@ -64,6 +64,16 @@ void setPosition(const msgs::Position &position){
   locator.set_xy(position.x, position.y);
 }
 
+void stop(const std_msgs::Empty &stop)
+{
+  flash.stop();
+}
+
+void setMaxSpeed(const std_msgs::Float32 &maxSpeed)
+{
+  flash.setMaxSpeed(maxSpeed.data);
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -74,6 +84,8 @@ void setup()
   locator.begin();
   callbacks.on_set_displacement = setDisplacement;
   callbacks.on_set_position = setPosition;
+  callbacks.on_set_stop = stop;
+  callbacks.on_set_max_speed = setMaxSpeed;
   rosApi = new RosApi(&callbacks);
   rosApi->begin();
   delay(1000);
@@ -82,16 +94,15 @@ void setup()
   flash.set_angle(0);
   flash.set_dist(0);
 
-  mouvementsAngle[0] = (double)45;
-  mouvementsAngle[1] = (double)45;
-  mouvementsAngle[2] = (double)90;
+  // mouvementsAngle[0] = (double)45;
+  // mouvementsAngle[1] = (double)45;
+  // mouvementsAngle[2] = (double)90;
 
-  mouvementsDist[0] = (double)0;
-  mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
-  mouvementsDist[2] = (double)0;
+  // mouvementsDist[0] = (double)0;
+  // mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
+  // mouvementsDist[2] = (double)0;
 
-  new_displacement = true;
-
+  // new_displacement = true;
 }
 
 void loop()
@@ -124,6 +135,19 @@ void updateSetPoints()
     rosApi->pub_distance_reached();
     send_data();
     new_displacement = false;
+
+
+  // mouvementsAngle[0] = (double)180;
+  // mouvementsAngle[1] = (double)180;
+  // mouvementsAngle[2] = (double)0;
+
+  // mouvementsDist[0] = (double)0;
+  // mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
+  // mouvementsDist[2] = (double)0;
+
+  // new_displacement = true;
+
+
   }
 }
 

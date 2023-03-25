@@ -20,6 +20,10 @@ public:
     bool isDone();
 
     void resetDone();
+
+    void stop();
+
+    void setMaxSpeed(float);
 private:
 
     PID PID_dist, PID_angle;

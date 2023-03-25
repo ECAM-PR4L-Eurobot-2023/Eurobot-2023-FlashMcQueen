@@ -128,3 +128,14 @@ void FLASH::resetDone(){
     PID_dist.resetDone();
     PID_angle.resetDone();
 }
+
+void FLASH::stop(){
+    setPointAngle = inputAngle;
+    setPointDist = inputDist;
+    moteur1.setTension(0);
+    moteur2.setTension(0);
+}
+
+void FLASH::setMaxSpeed(float maxSpeed){
+    PID_dist.setMinMax(maxSpeed);
+}

@@ -14,7 +14,9 @@ RosApi::RosApi(RosApiCallbacks *callbacks, long baudrate) :
     set_pid_left_wheel_sub(TOPIC_SET_PID_LEFT_WHEEL, callbacks->on_set_pid_left_wheel),
     set_pid_right_wheel_sub(TOPIC_SET_PID_RIGHT_WHEEL, callbacks->on_set_pid_right_wheel),
     set_pid_position_sub(TOPIC_SET_PID_POSITION, callbacks->on_set_pid_position_sub),
-    set_pid_rotation_sub(TOPIC_SET_PID_ANGLE, callbacks->on_set_pid_rotation_sub) {}
+    set_pid_rotation_sub(TOPIC_SET_PID_ANGLE, callbacks->on_set_pid_rotation_sub),
+    set_stop_sub(TOPIC_SET_STOP, callbacks->on_set_stop),
+    set_max_speed_sub(TOPIC_SET_MAX_SPEED, callbacks->on_set_max_speed) {}
 
 
 void RosApi::begin(void) {
@@ -38,6 +40,8 @@ void RosApi::begin(void) {
     nh.subscribe(set_pid_right_wheel_sub);
     nh.subscribe(set_pid_position_sub);
     nh.subscribe(set_pid_rotation_sub);
+    nh.subscribe(set_stop_sub);
+    nh.subscribe(set_max_speed_sub);
 }
 
 void RosApi::run(void) {
