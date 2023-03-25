@@ -117,7 +117,7 @@ void FLASH::set_angle(double angle){
 }
 
 void FLASH::set_dist(double dist){
-    setPointDist= dist;
+    setPointDist= dist + (double)encoder_compute1->get_ticks_since_last_command() + (double)encoder_compute2->get_ticks_since_last_command();
 }
 
 bool FLASH::isDone(){

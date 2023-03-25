@@ -81,6 +81,17 @@ void setup()
   encoder_right.reset_ticks_since_last_command();
   flash.set_angle(0);
   flash.set_dist(0);
+
+  mouvementsAngle[0] = (double)45;
+  mouvementsAngle[1] = (double)45;
+  mouvementsAngle[2] = (double)90;
+
+  mouvementsDist[0] = (double)0;
+  mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
+  mouvementsDist[2] = (double)0;
+
+  new_displacement = true;
+
 }
 
 void loop()
@@ -102,8 +113,8 @@ void updateSetPoints()
   {
     flash.set_angle(mouvementsAngle[counter]);
     flash.set_dist(mouvementsDist[counter]);
-    encoder_left.reset_ticks_since_last_command();
-    encoder_right.reset_ticks_since_last_command();
+    // encoder_left.reset_ticks_since_last_command();
+    // encoder_right.reset_ticks_since_last_command();
     flash.resetDone();
     counter++;
   }
