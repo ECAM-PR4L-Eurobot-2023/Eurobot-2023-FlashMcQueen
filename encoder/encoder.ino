@@ -95,8 +95,8 @@ void setup()
   flash.set_dist(0);
 
   mouvementsAngle[0] = (double)45;
-  mouvementsAngle[1] = (double)0;
-  mouvementsAngle[2] = (double)90;
+  mouvementsAngle[1] = (double)45;
+  mouvementsAngle[2] = (double)135;
 
   mouvementsDist[0] = (double)0;
   mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
