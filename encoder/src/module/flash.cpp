@@ -143,10 +143,10 @@ void FLASH::setMaxSpeed(float maxSpeed){
 void FLASH::setAngleOnly(bool angleOnly){
     if (angleOnly){
         PID_angle.setTuning(kp_angle_only,ki_angle_only,0.0);
-        PID_angle.resetMI();
+        // PID_angle.resetMI();
     }
     else{
         PID_angle.setTuning(kp_angle,ki_angle,0.0);
-        PID_angle.resetMI();
+        // PID_angle.resetMI();
     }
 }

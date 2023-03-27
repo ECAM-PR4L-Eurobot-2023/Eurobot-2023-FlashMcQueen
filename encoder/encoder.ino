@@ -44,7 +44,7 @@ bool new_displacement = false;
  unsigned long last_time = 0;
 
 
-FLASH flash(0.085, 0.04, 0.30, 0.035,0.3,0.035, &encoder_left, &encoder_right, moteurL, moteurR, 0);
+FLASH flash(0.085, 0.04, 0.30, 0.040,0.3,0.040, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
 void setDisplacement(const msgs::Displacement &displacement)
 {
@@ -96,7 +96,7 @@ void setup()
 
   mouvementsAngle[0] = (double)45;
   mouvementsAngle[1] = (double)45;
-  mouvementsAngle[2] = (double)135;
+  mouvementsAngle[2] = (double)45;
 
   mouvementsDist[0] = (double)0;
   mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
