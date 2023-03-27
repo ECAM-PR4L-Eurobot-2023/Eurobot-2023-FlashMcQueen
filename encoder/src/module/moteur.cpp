@@ -21,7 +21,7 @@ void Moteur::setTension(int tension) {
         analogWrite(pinB, abs(tension));
     }
     else if (tension < 0) {
-        Serial.println("tension negative");
+        // Serial.println("tension negative");
         analogWrite(pinB, 0);
         analogWrite(pinA, abs(tension));
     }

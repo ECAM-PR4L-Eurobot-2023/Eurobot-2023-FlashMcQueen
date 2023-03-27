@@ -7,8 +7,8 @@
 // #define WHEELS_TO_CENTER (120)  // mm
 
 FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle,double kp_angle_only, double ki_angle_only, EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2,bool dynamicMapping):
-    encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),dynamicMapping(dynamicMapping), kp_angle_only(kp_angle_only), ki_angle_only(ki_angle_only),
-    PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-255,255,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-255,255,50, 30)){
+    encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),dynamicMapping(dynamicMapping),
+    PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-255,255,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-255,255,50, 30)),PID_angle_only(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle_only,ki_angle_only,0,-255,255,50, 30)){
         setPointAngle=0;
         setPointDist=0;
         inputAngle=0;
@@ -27,16 +27,23 @@ void FLASH::run() {
     // Serial.print("inputDist :");
     // Serial.println(inputDist);
     // Serial.println("dist");
+    
     bool distCompute = PID_dist.compute();
     // Serial.println("angle");
-    bool angleCompute = PID_angle.compute();
+    bool angleCompute;
+    if (angleOnly){
+        angleCompute = PID_angle_only.compute();
+    }
+    else{
+        angleCompute = PID_angle.compute();
+    }
     if (distCompute || angleCompute) {
         pwmg = (outputDist + outputAngle)/2;
         pwmd = (outputDist - outputAngle)/2;
         difPwm = pwmg - pwmd;
-        Serial.println(difPwm);
+        // Serial.println(difPwm);
         if (abs(difPwm) > 6) {
-            Serial.println("difPwm--------------------------------------------------------");
+            // Serial.println("difPwm--------------------------------------------------------");
             if (difPwm > 0) {
                 limPwmG = 240;
             } else {
@@ -121,12 +128,20 @@ void FLASH::set_dist(double dist){
 }
 
 bool FLASH::isDone(){
-    return PID_dist.isDone() && PID_angle.isDone();
+    if (angleOnly){
+        return PID_dist.isDone() && PID_angle_only.isDone();
+    }
+    else{
+        return PID_dist.isDone() && PID_angle.isDone();
+    }
+
+    
 }
 
 void FLASH::resetDone(){
     PID_dist.resetDone();
     PID_angle.resetDone();
+    PID_angle_only.resetDone();
 }
 
 void FLASH::stop(){
@@ -140,13 +155,6 @@ void FLASH::setMaxSpeed(float maxSpeed){
     PID_dist.setMinMax(maxSpeed);
 }
 
-void FLASH::setAngleOnly(bool angleOnly){
-    if (angleOnly){
-        PID_angle.setTuning(kp_angle_only,ki_angle_only,0.0);
-        // PID_angle.resetMI();
-    }
-    else{
-        PID_angle.setTuning(kp_angle,ki_angle,0.0);
-        // PID_angle.resetMI();
-    }
+void FLASH::setAngleOnly(bool only){
+    angleOnly = only;
 }

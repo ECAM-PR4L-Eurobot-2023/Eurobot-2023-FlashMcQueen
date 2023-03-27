@@ -28,7 +28,7 @@ public:
     void setMaxSpeed(float);
 private:
 
-    PID PID_dist, PID_angle;
+    PID PID_dist, PID_angle, PID_angle_only;
     EncoderCompute *encoder_compute1;
     EncoderCompute *encoder_compute2;
     Moteur moteur1, moteur2;
@@ -46,6 +46,7 @@ private:
     double limPwmG, limPwmD, difPwm;
 
     bool dynamicMapping;
+    bool angleOnly;
 };
 
 #endif
