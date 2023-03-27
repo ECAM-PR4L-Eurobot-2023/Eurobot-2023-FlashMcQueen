@@ -10,7 +10,7 @@
 class FLASH {
 
 public:
-    FLASH(double, double, double, double, EncoderCompute *, EncoderCompute *, Moteur, Moteur,bool);
+    FLASH(double, double, double, double,double,double, EncoderCompute *, EncoderCompute *, Moteur, Moteur,bool);
 
     void set_dist(double);
     void set_angle(double);
@@ -23,6 +23,8 @@ public:
 
     void stop();
 
+    void setAngleOnly(bool);
+
     void setMaxSpeed(float);
 private:
 
@@ -30,7 +32,7 @@ private:
     EncoderCompute *encoder_compute1;
     EncoderCompute *encoder_compute2;
     Moteur moteur1, moteur2;
-    double kp_dist, ki_dist, kp_angle, ki_angle;
+    double kp_dist, ki_dist, kp_angle, ki_angle,kp_angle_only, ki_angle_only;
     
     double setPointDist ;
     double inputDist ;

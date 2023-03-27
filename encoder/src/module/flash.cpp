@@ -6,8 +6,8 @@
 
 // #define WHEELS_TO_CENTER (120)  // mm
 
-FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle, EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2,bool dynamicMapping):
-    encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),dynamicMapping(dynamicMapping),
+FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle,double kp_angle_only, double ki_angle_only, EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2,bool dynamicMapping):
+    encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),dynamicMapping(dynamicMapping), kp_angle_only(kp_angle_only), ki_angle_only(ki_angle_only),
     PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-255,255,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-255,255,50, 30)){
         setPointAngle=0;
         setPointDist=0;
@@ -138,4 +138,13 @@ void FLASH::stop(){
 
 void FLASH::setMaxSpeed(float maxSpeed){
     PID_dist.setMinMax(maxSpeed);
+}
+
+void FLASH::setAngleOnly(bool angleOnly){
+    if (angleOnly){
+        PID_angle.setTuning(kp_angle_only,ki_angle_only,0.0);
+    }
+    else{
+        PID_angle.setTuning(kp_angle,ki_angle,0.0);
+    }
 }
