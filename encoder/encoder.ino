@@ -96,15 +96,15 @@ void setup()
   flash.set_angle(0);
   flash.set_dist(0);
 
-  mouvementsAngle[0] = (double)100;
-  mouvementsAngle[1] = (double)100;
-  mouvementsAngle[2] = (double)290;
+  // mouvementsAngle[0] = (double)100;
+  // mouvementsAngle[1] = (double)100;
+  // mouvementsAngle[2] = (double)290;
 
-  mouvementsDist[0] = (double)0;
-  mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
-  mouvementsDist[2] = (double)0;
+  // mouvementsDist[0] = (double)0;
+  // mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
+  // mouvementsDist[2] = (double)0;
 
-  new_displacement = true;
+  // new_displacement = true;
 }
 
 void loop()
