@@ -128,5 +128,5 @@ void PID::setMinMax(double val){
 }
 
 void PID::resetMI(){
-    MI = 0;
+    last_I = 0;
 }

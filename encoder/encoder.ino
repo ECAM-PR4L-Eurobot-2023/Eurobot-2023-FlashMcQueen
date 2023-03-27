@@ -52,9 +52,9 @@ void setDisplacement(const msgs::Displacement &displacement)
   mouvementsAngle[1] = (double)displacement.angle_start;
   mouvementsAngle[2] = (double)displacement.angle_end;
 
-  mouvementsDist[0] = (double)0;
+  mouvementsDist[0] = (double)0.0;
   mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
-  mouvementsDist[2] = (double)0;
+  mouvementsDist[2] = (double)0.0;
 
   new_displacement = true;
 }
@@ -124,7 +124,7 @@ void updateSetPoints()
   {
     flash.set_angle(mouvementsAngle[counter]);
     flash.set_dist(mouvementsDist[counter]);
-    flash.setAngleOnly(mouvementsDist[counter]==0);
+    flash.setAngleOnly(mouvementsDist[counter]==0.0);
     // encoder_left.reset_ticks_since_last_command();
     // encoder_right.reset_ticks_since_last_command();
     flash.resetDone();
