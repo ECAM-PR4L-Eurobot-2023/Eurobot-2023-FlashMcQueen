@@ -95,7 +95,7 @@ void setup()
   flash.set_dist(0);
 
   mouvementsAngle[0] = (double)45;
-  mouvementsAngle[1] = (double)45;
+  mouvementsAngle[1] = (double)0;
   mouvementsAngle[2] = (double)90;
 
   mouvementsDist[0] = (double)0;
@@ -124,7 +124,7 @@ void updateSetPoints()
   {
     flash.set_angle(mouvementsAngle[counter]);
     flash.set_dist(mouvementsDist[counter]);
-    // flash.setAngleOnly(mouvementsDist[counter]==0 && mouvementsAngle[counter]!=0);
+    flash.setAngleOnly(mouvementsDist[counter]==0);
     // encoder_left.reset_ticks_since_last_command();
     // encoder_right.reset_ticks_since_last_command();
     flash.resetDone();

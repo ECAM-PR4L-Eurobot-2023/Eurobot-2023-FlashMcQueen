@@ -126,3 +126,7 @@ void PID::setMinMax(double val){
     max = val;
     min = -val;
 }
+
+void PID::resetMI(){
+    MI = 0;
+}
