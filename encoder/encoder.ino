@@ -44,8 +44,8 @@ bool new_displacement = false;
  unsigned long last_time = 0;
 
 
-FLASH flash(0.085, 0.04, 0.30, 0.040,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
-// FLASH flash(0.0, 0.0, 0.0, 0.0,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
+// FLASH flash(0.085, 0.04, 0.30, 0.040,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
+FLASH flash(0.085, 0.04, 0.4, 0.0,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
 
 void setDisplacement(const msgs::Displacement &displacement)
@@ -96,15 +96,15 @@ void setup()
   flash.set_angle(0);
   flash.set_dist(0);
 
-  // mouvementsAngle[0] = (double)100;
-  // mouvementsAngle[1] = (double)100;
-  // mouvementsAngle[2] = (double)290;
+  mouvementsAngle[0] = (double)0;
+  mouvementsAngle[1] = (double)0;
+  mouvementsAngle[2] = (double)0;
 
-  // mouvementsDist[0] = (double)0;
-  // mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
-  // mouvementsDist[2] = (double)0;
+  mouvementsDist[0] = (double)0;
+  mouvementsDist[1] = ((double)1500*2) / DISTANCE_PER_TICKS;
+  mouvementsDist[2] = (double)0;
 
-  // new_displacement = true;
+  new_displacement = true;
 }
 
 void loop()
