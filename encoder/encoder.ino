@@ -48,15 +48,23 @@ bool new_displacement = false;
 FLASH flash(0.085, 0.04, 0.4, 0.0,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
 
+Position to_go;
+
 void setDisplacement(const msgs::Displacement &displacement)
 {
   mouvementsAngle[0] = (double)displacement.angle_start;
   mouvementsAngle[1] = (double)displacement.angle_start;
   mouvementsAngle[2] = (double)displacement.angle_end;
 
-  mouvementsDist[0] = (double)0.0;
-  mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
-  mouvementsDist[2] = (double)0.0;
+
+  // to_go = Position(displacement.x,displacement.y);
+  // mouvementsDist[0] = (double)0.0;
+  // mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
+  // mouvementsDist[2] = (double)0.0;
+
+  // mouvementsDist[0] = (double)displacement.angle_start;
+  // mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
+  // mouvementsDist[2] = (double)displacement.angle_end;
 
   new_displacement = true;
 }
@@ -120,6 +128,41 @@ void loop()
 
 }
 
+// void updateSetPoints()
+// {
+//   if (new_displacement && flash.isDone() && counter < 3)
+//   {
+//     flash.set_angle(mouvementsAngle[counter]);
+//     flash.set_dist(mouvementsDist[counter]);
+//     flash.setAngleOnly(mouvementsDist[counter]==0.0 && abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
+//     // Serial.println("angle : " +String(locator.get_angle_degree()));
+//     // encoder_left.reset_ticks_since_last_command();
+//     // encoder_right.reset_ticks_since_last_command();
+//     flash.resetDone();
+//     counter++;
+//   }
+//   else if (counter >= 3 && flash.isDone())
+//   {
+//     counter = 0;
+//     rosApi->pub_distance_reached();
+//     send_data();
+//     new_displacement = false;
+
+
+//   // mouvementsAngle[0] = (double)180;
+//   // mouvementsAngle[1] = (double)180;
+//   // mouvementsAngle[2] = (double)0;
+
+//   // mouvementsDist[0] = (double)0;
+//   // mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
+//   // mouvementsDist[2] = (double)0;
+
+//   // new_displacement = true;
+
+
+//   }
+// }
+
 void updateSetPoints()
 {
   if (new_displacement && flash.isDone() && counter < 3)
@@ -127,9 +170,6 @@ void updateSetPoints()
     flash.set_angle(mouvementsAngle[counter]);
     flash.set_dist(mouvementsDist[counter]);
     flash.setAngleOnly(mouvementsDist[counter]==0.0 && abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
-    // Serial.println("angle : " +String(locator.get_angle_degree()));
-    // encoder_left.reset_ticks_since_last_command();
-    // encoder_right.reset_ticks_since_last_command();
     flash.resetDone();
     counter++;
   }
@@ -139,19 +179,6 @@ void updateSetPoints()
     rosApi->pub_distance_reached();
     send_data();
     new_displacement = false;
-
-
-  // mouvementsAngle[0] = (double)180;
-  // mouvementsAngle[1] = (double)180;
-  // mouvementsAngle[2] = (double)0;
-
-  // mouvementsDist[0] = (double)0;
-  // mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
-  // mouvementsDist[2] = (double)0;
-
-  // new_displacement = true;
-
-
   }
 }
 

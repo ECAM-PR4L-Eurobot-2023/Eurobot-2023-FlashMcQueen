@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ros.h>
+#include "ros/msg.h"
 
 namespace msgs
 {
@@ -14,15 +14,18 @@ namespace msgs
     public:
       typedef float _angle_start_type;
       _angle_start_type angle_start;
+      typedef float _x_type;
+      _x_type x;
+      typedef float _y_type;
+      _y_type y;
       typedef float _angle_end_type;
       _angle_end_type angle_end;
-      typedef float _distance_type;
-      _distance_type distance;
 
     Displacement():
       angle_start(0),
-      angle_end(0),
-      distance(0)
+      x(0),
+      y(0),
+      angle_end(0)
     {
     }
 
@@ -42,6 +45,26 @@ namespace msgs
       union {
         float real;
         uint32_t base;
+      } u_x;
+      u_x.real = this->x;
+      *(outbuffer + offset + 0) = (u_x.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_x.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_x.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_x.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->x);
+      union {
+        float real;
+        uint32_t base;
+      } u_y;
+      u_y.real = this->y;
+      *(outbuffer + offset + 0) = (u_y.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_y.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_y.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_y.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->y);
+      union {
+        float real;
+        uint32_t base;
       } u_angle_end;
       u_angle_end.real = this->angle_end;
       *(outbuffer + offset + 0) = (u_angle_end.base >> (8 * 0)) & 0xFF;
@@ -49,16 +72,6 @@ namespace msgs
       *(outbuffer + offset + 2) = (u_angle_end.base >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (u_angle_end.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->angle_end);
-      union {
-        float real;
-        uint32_t base;
-      } u_distance;
-      u_distance.real = this->distance;
-      *(outbuffer + offset + 0) = (u_distance.base >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (u_distance.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_distance.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_distance.base >> (8 * 3)) & 0xFF;
-      offset += sizeof(this->distance);
       return offset;
     }
 
@@ -79,6 +92,28 @@ namespace msgs
       union {
         float real;
         uint32_t base;
+      } u_x;
+      u_x.base = 0;
+      u_x.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_x.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_x.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_x.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->x = u_x.real;
+      offset += sizeof(this->x);
+      union {
+        float real;
+        uint32_t base;
+      } u_y;
+      u_y.base = 0;
+      u_y.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_y.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_y.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_y.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->y = u_y.real;
+      offset += sizeof(this->y);
+      union {
+        float real;
+        uint32_t base;
       } u_angle_end;
       u_angle_end.base = 0;
       u_angle_end.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
@@ -87,22 +122,11 @@ namespace msgs
       u_angle_end.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       this->angle_end = u_angle_end.real;
       offset += sizeof(this->angle_end);
-      union {
-        float real;
-        uint32_t base;
-      } u_distance;
-      u_distance.base = 0;
-      u_distance.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_distance.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_distance.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_distance.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
-      this->distance = u_distance.real;
-      offset += sizeof(this->distance);
      return offset;
     }
 
     const char * getType(){ return "eurobot2023/Displacement"; };
-    const char * getMD5(){ return "be88142c5a8be8b0a32c2c8c2f059f00"; };
+    const char * getMD5(){ return "ce019b2fe986924be410f26b6befeb6e"; };
 
   };
 
