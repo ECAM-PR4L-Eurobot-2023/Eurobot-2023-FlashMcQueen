@@ -46,10 +46,17 @@ bool new_displacement = false;
 
 // FLASH flash(0.085, 0.04, 0.30, 0.040,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 // FLASH flash(0.085, 0.04, 0.4, 0.0,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
-double d0[2] = {0.085, 0.04};
+// double d0[2] = {0.2, 0.050}; // ok 10-40
+double d0[2] = {0.14, 0.014};//ok 180-200
+
+// double d0[2] = {0.08, 0.0};
+
 double d1[2] = {0.085, 0.04};
 double d2[2] = {0.085, 0.04};
-double a0[2] = {0.4, 0.0};
+
+double a0[2] = {0.0, 0.0};
+
+// double a0[2] = {0.4, 0.0};
 double a1[2] = {0.4, 0.0};
 double a2[2] = {0.04,0.0055};
 FLASH flash(d0,d1,d2,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, 0);
@@ -125,6 +132,16 @@ void setup()
   // mouvementsDist[2] = (double)0;
 
   // new_displacement = true;
+
+    mouvementsAngle[0] = (double)0;
+  mouvementsAngle[1] = (double)0;
+  mouvementsAngle[2] = (double)0;
+
+
+  to_go.x = (double)80;
+  to_go.y = (double)0;
+
+  new_displacement = true;
 }
 
 void loop()
@@ -137,6 +154,9 @@ void loop()
     last_time = millis();
     send_data();
   }
+  // Serial.println("''''''''''''''''''''''''''''''''''");
+  // Serial.println(encoder_left.get_distance_tick());
+  // Serial.println(encoder_right.get_distance_tick());
 
 }
 
@@ -179,30 +199,34 @@ void updateSetPoints()
 {
   if (new_displacement && flash.isDone() && counter < 3)
   {
+    flash.setAnglePID(0);
+    flash.setDistPID(0);
     if (counter !=1){
       flash.set_angle(mouvementsAngle[counter]);
       flash.set_dist(0.0);
       // flash.setAngleOnly(abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
       flash.resetDone();
+      // double angle = abs(locator.get_angle_degree() - mouvementsAngle[counter]);
+      // if (angle<45){
+      //   flash.setAnglePID(1);
+      // }
+      // else{
+      //   flash.setAnglePID(2);
+      // }
     }
     else{
       flash.set_angle(mouvementsAngle[counter]);
       double dist = calcDist(locator.get_position(), to_go);
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
-      flash.setAnglePID(0);
-      if (dist<400){
-        flash.setDistPID(0);
-      }
-      else{
-        flash.setDistPID(1);
-      }
-      double angle = abs(locator.get_angle_degree() - mouvementsAngle[counter]);
-      if (angle<45){
-        flash.setAnglePID(1);
-      }
-      else{
-        flash.setAnglePID(2);
-      }
+
+      // flash.setAnglePID(0);
+      // if (dist<400){
+      //   flash.setDistPID(0);
+      // }
+      // else{
+      //   flash.setDistPID(1);
+      // }
+
       // flash.setAngleOnly(abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
       flash.resetDone();
     }

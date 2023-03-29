@@ -1,4 +1,4 @@
-#ifndef MOTEUR_H
+ #ifndef MOTEUR_H
 #define MOTEUR_H
 
 class Moteur {
@@ -11,7 +11,7 @@ public:
     void begin(void);
 
 private:
-    int pinA, pinB;
+    int pinPWM, pinDIR;
 
 };
 

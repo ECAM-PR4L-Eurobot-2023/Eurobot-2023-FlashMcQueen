@@ -1,48 +1,42 @@
 #include "moteur.h"
 #include <Arduino.h>
 
-Moteur::Moteur(int pinA, int pinB):
-    pinA(pinA), pinB(pinB){}
+Moteur::Moteur(int pinPWM, int pinDIR):
+    pinPWM(pinPWM), pinDIR(pinDIR){}
 
 void Moteur::begin(){
     // Reset the pin state
-    gpio_reset_pin((gpio_num_t)pinA);
-    gpio_reset_pin((gpio_num_t)pinB);
+    gpio_reset_pin((gpio_num_t)pinPWM);
+    gpio_reset_pin((gpio_num_t)pinDIR);
 
     // Set the pin in INPUT
-    pinMode(pinA, OUTPUT);
-    pinMode(pinB, OUTPUT);
+    pinMode(pinPWM, OUTPUT);
+    pinMode(pinDIR, OUTPUT);
 
 }
 
 void Moteur::setTension(int tension) {
     if (tension > 0) {
-        analogWrite(pinA, 0);
-        analogWrite(pinB, abs(tension));
+        digitalWrite(pinDIR, HIGH);
     }
     else if (tension < 0) {
-        // Serial.println("tension negative");
-        analogWrite(pinB, 0);
-        analogWrite(pinA, abs(tension));
+        digitalWrite(pinDIR, LOW);
     }
-    else {
-        analogWrite(pinB, 0);
-        analogWrite(pinB, 0);
-    }
+    analogWrite(pinPWM, abs(tension));
 }
 
 // void Moteur::setTensionKickStart(int tension, int time){
-//     if (tension > 0) {
-//         digitalWrite(pinA, HIGH);
-//         digitalWrite(pinB, LOW);
+//     if (tension > 0) { 
+//         digitalWrite(pinPWM, HIGH);
+//         digitalWrite(pinDIR, LOW);
 //     }
 //     else if (tension < 0) {
-//         digitalWrite(pinA, LOW);
-//         digitalWrite(pinB, HIGH);
+//         digitalWrite(pinPWM, LOW);
+//         digitalWrite(pinDIR, HIGH);
 //     }
 //     else {
-//         digitalWrite(pinA, LOW);
-//         digitalWrite(pinB, LOW);
+//         digitalWrite(pinPWM, LOW);
+//         digitalWrite(pinDIR, LOW);
 //     }
 //     analogWrite(pinE, 255);
 //     delay(time);
