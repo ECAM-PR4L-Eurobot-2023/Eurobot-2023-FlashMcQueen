@@ -6,15 +6,18 @@
 
 // #define WHEELS_TO_CENTER (120)  // mm
 
-FLASH::FLASH(double kp_dist,double ki_dist, double kp_angle, double ki_angle,double kp_angle_only, double ki_angle_only, EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2,bool dynamicMapping):
+FLASH::FLASH(double dist0[2],double dist1[2], double dist2[2], double angle0[2],double angle1[2], double angle2[2], EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2,bool dynamicMapping):
     encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),dynamicMapping(dynamicMapping),
-    PID_dist(PID(&inputDist, &outputDist, &setPointDist,kp_dist,ki_dist,0,-255,255,50,30)),PID_angle(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle,ki_angle,0,-255,255,50, 30)),PID_angle_only(PID(&inputAngle, &outputAngle, &setPointAngle,kp_angle_only,ki_angle_only,0,-255,255,50, 30)){
+    PID_dist({PID(&inputDist, &outputDist, &setPointDist,dist0[0],dist0[1],0,-255,255,50,30),PID(&inputDist, &outputDist, &setPointDist,dist1[0],dist1[1],0,-255,255,50,30),PID(&inputDist, &outputDist, &setPointDist,dist2[0],dist2[1],0,-255,255,50,30)}),
+    PID_angle({PID(&inputAngle, &outputAngle, &setPointAngle,angle0[0],angle0[1],0,-255,255,50, 30),PID(&inputAngle, &outputAngle, &setPointAngle,angle1[0],angle2[1],0,-255,255,50, 30),PID(&inputDist, &outputDist, &setPointDist,angle2[0],angle2[1],0,-255,255,50,30)}){
         setPointAngle=0;
         setPointDist=0;
         inputAngle=0;
         inputDist=0;
         limPwmD=200;
         limPwmG=210;
+        anglePID=0;
+        distPID=0;
     }
 
 
@@ -28,16 +31,17 @@ void FLASH::run() {
     // Serial.println(inputDist);
     // Serial.println("dist");
     
-    bool distCompute = PID_dist.compute();
+    bool distCompute = PID_dist[distPID].compute();
     // Serial.println("angle");
-    bool angleCompute;
-    if (angleOnly){
-        angleCompute = PID_angle_only.compute();
-    }
-    else{
-        angleCompute = PID_angle.compute();
-    }
+    bool angleCompute = PID_angle[anglePID].compute();
+    // if (angleOnly){
+    //     angleCompute = PID_angle_only.compute();
+    // }
+    // else{
+    //     angleCompute = PID_angle.compute();
+    // }
     if (distCompute || angleCompute) {
+        Serial.println("dist: " + String(distPID) + " angle: " + String(anglePID));
         pwmg = (outputDist + outputAngle)/2;
         pwmd = (outputDist - outputAngle)/2;
         difPwm = pwmg - pwmd;
@@ -128,20 +132,16 @@ void FLASH::set_dist(double dist){
 }
 
 bool FLASH::isDone(){
-    if (angleOnly){
-        return PID_dist.isDone() && PID_angle_only.isDone();
-    }
-    else{
-        return PID_dist.isDone() && PID_angle.isDone();
-    }
+    return PID_dist[distPID].isDone() && PID_angle[anglePID].isDone();
 
     
 }
 
 void FLASH::resetDone(){
-    PID_dist.resetDone();
-    PID_angle.resetDone();
-    PID_angle_only.resetDone();
+    for (int i = 0; i < 3; i++){
+        PID_dist[i].resetDone();
+        PID_angle[i].resetDone();
+    }
 }
 
 void FLASH::stop(){
@@ -152,9 +152,13 @@ void FLASH::stop(){
 }
 
 void FLASH::setMaxSpeed(float maxSpeed){
-    PID_dist.setMinMax(maxSpeed);
+    PID_dist[distPID].setMinMax(maxSpeed);
 }
 
-void FLASH::setAngleOnly(bool only){
-    angleOnly = only;
+void FLASH::setAnglePID(int pid){
+    anglePID = pid;
+}
+
+void FLASH::setDistPID(int pid){
+    distPID = pid;
 }

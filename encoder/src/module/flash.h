@@ -10,7 +10,7 @@
 class FLASH {
 
 public:
-    FLASH(double, double, double, double,double,double, EncoderCompute *, EncoderCompute *, Moteur, Moteur,bool);
+    FLASH(double d0[2], double d1[2], double d2[2], double a0[2],double a1[2],double a2[2], EncoderCompute *, EncoderCompute *, Moteur, Moteur,bool);
 
     void set_dist(double);
     void set_angle(double);
@@ -23,12 +23,14 @@ public:
 
     void stop();
 
-    void setAngleOnly(bool);
+    void setAnglePID(int);
+    void setDistPID(int);
 
     void setMaxSpeed(float);
 private:
 
-    PID PID_dist, PID_angle, PID_angle_only;
+    PID PID_dist[3];
+    PID PID_angle[3];
     EncoderCompute *encoder_compute1;
     EncoderCompute *encoder_compute2;
     Moteur moteur1, moteur2;
@@ -46,7 +48,9 @@ private:
     double limPwmG, limPwmD, difPwm;
 
     bool dynamicMapping;
-    bool angleOnly;
+    // bool angleOnly;
+
+    int anglePID, distPID;
 };
 
 #endif
