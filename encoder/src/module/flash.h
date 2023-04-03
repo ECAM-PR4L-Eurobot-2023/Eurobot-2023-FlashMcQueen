@@ -10,7 +10,7 @@
 class FLASH {
 
 public:
-    FLASH(double d0[2], double d1[2], double d2[2], double a0[2],double a1[2],double a2[2], EncoderCompute *, EncoderCompute *, Moteur, Moteur,bool);
+    FLASH(double d0[2], double d1[2], double d2[2], double d3[2], double d4[2], double d5[2], double a0[2],double a1[2],double a2[2], EncoderCompute *, EncoderCompute *, Moteur, Moteur,bool);
 
     void set_dist(double);
     void set_angle(double);
@@ -29,7 +29,7 @@ public:
     void setMaxSpeed(float);
 private:
 
-    PID PID_dist[3];
+    PID PID_dist[6];
     PID PID_angle[3];
     EncoderCompute *encoder_compute1;
     EncoderCompute *encoder_compute2;

@@ -55,6 +55,7 @@ class PID{
         double virtual computeError(double, double);
 
         int done;
+        bool sign;
 };
 
 #endif

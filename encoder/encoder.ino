@@ -46,20 +46,29 @@ bool new_displacement = false;
 
 // FLASH flash(0.085, 0.04, 0.30, 0.040,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 // FLASH flash(0.085, 0.04, 0.4, 0.0,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
-// double d0[2] = {0.2, 0.050}; // ok 10-40
-double d0[2] = {0.14, 0.014};//ok 180-200
+double d0[2] = {0.2, 0.050}; // bien 10-40 ok jusqua +-60
+double d1[2] = {0.15, 0.03};//bien 80-120
+double d2[2] = {0.14, 0.014};//bien 120-400
+// double d3[2] = {0.16, 0.02}; // bien 400-1100
+double d3[2] = {0.18, 0.03}; // bien 400-1100
 
-// double d0[2] = {0.08, 0.0};
+double d4[2] = {0.11, 0.028}; // bien 1100-2500
 
-double d1[2] = {0.085, 0.04};
-double d2[2] = {0.085, 0.04};
+// double d5[2] = {0.8, 0.3}; // pour les rotations
+double d5[2] = {0.2, 0.05}; // pour les rotations
 
-double a0[2] = {0.0, 0.0};
+
+// double a0[2] = {0.37, 0.1};
+// double a0[2] = {0.2, 0.02};
+double a0[2] = {0.3, 0.05};
 
 // double a0[2] = {0.4, 0.0};
-double a1[2] = {0.4, 0.0};
+// double a1[2] = {0.135, 0.015}; // ok 45
+// double a1[2] = {0.14, 0.08}; // ok 45
+double a1[2] = {0.2, 0.08}; // ok 45
+
 double a2[2] = {0.04,0.0055};
-FLASH flash(d0,d1,d2,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, 0);
+FLASH flash(d0,d1,d2,d3,d4,d5,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
 
 
@@ -117,9 +126,10 @@ void setup()
   callbacks.on_set_max_speed = setMaxSpeed;
   rosApi = new RosApi(&callbacks);
   rosApi->begin();
-  delay(1000);
+  delay(2000);
   encoder_left.reset_ticks_since_last_command();
   encoder_right.reset_ticks_since_last_command();
+  locator.set_xy(0, 0);
   flash.set_angle(0);
   flash.set_dist(0);
 
@@ -133,12 +143,12 @@ void setup()
 
   // new_displacement = true;
 
-    mouvementsAngle[0] = (double)0;
+  mouvementsAngle[0] = (double)0;
   mouvementsAngle[1] = (double)0;
   mouvementsAngle[2] = (double)0;
 
 
-  to_go.x = (double)80;
+  to_go.x = (double)1300;
   to_go.y = (double)0;
 
   new_displacement = true;
@@ -157,6 +167,9 @@ void loop()
   // Serial.println("''''''''''''''''''''''''''''''''''");
   // Serial.println(encoder_left.get_distance_tick());
   // Serial.println(encoder_right.get_distance_tick());
+  // Serial.print("angle mesured : ");
+  // Serial.println(locator.get_angle_degree());
+  // delay(100);
 
 }
 
@@ -199,9 +212,12 @@ void updateSetPoints()
 {
   if (new_displacement && flash.isDone() && counter < 3)
   {
-    flash.setAnglePID(0);
-    flash.setDistPID(0);
+    // flash.setAnglePID(0);
+    // flash.setDistPID(0);
+    Serial.println("counter : " + String(counter));
     if (counter !=1){
+      flash.setAnglePID(1);
+      flash.setDistPID(5);
       flash.set_angle(mouvementsAngle[counter]);
       flash.set_dist(0.0);
       // flash.setAngleOnly(abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
@@ -219,15 +235,23 @@ void updateSetPoints()
       double dist = calcDist(locator.get_position(), to_go);
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
 
-      // flash.setAnglePID(0);
-      // if (dist<400){
-      //   flash.setDistPID(0);
-      // }
-      // else{
-      //   flash.setDistPID(1);
-      // }
+      flash.setAnglePID(0);
+      if (dist<70){
+        flash.setDistPID(0);
+      }
+      else if (dist<120){
+        flash.setDistPID(1);
+      }
+      else if (dist<400){
+        flash.setDistPID(2);
+      }
+      else if (dist<1100){
+        flash.setDistPID(3);
+      }
+      else{
+        flash.setDistPID(4);
+      }
 
-      // flash.setAngleOnly(abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
       flash.resetDone();
     }
 
@@ -235,6 +259,7 @@ void updateSetPoints()
   }
   else if (counter >= 3 && flash.isDone())
   {
+    flash.resetDone();
     counter = 0;
     rosApi->pub_distance_reached();
     send_data();

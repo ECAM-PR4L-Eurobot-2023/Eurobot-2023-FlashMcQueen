@@ -4,12 +4,15 @@
 #include "encoder_compute.h"
 #include "locator.h"  //to get wheels to center definition
 
+#define errorAngle 8
+#define errorDist 30
+
 // #define WHEELS_TO_CENTER (120)  // mm
 
-FLASH::FLASH(double dist0[2],double dist1[2], double dist2[2], double angle0[2],double angle1[2], double angle2[2], EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2,bool dynamicMapping):
+FLASH::FLASH(double dist0[2],double dist1[2], double dist2[2],double dist3[2], double dist4[2],double dist5[2], double angle0[2],double angle1[2], double angle2[2], EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2,bool dynamicMapping):
     encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),dynamicMapping(dynamicMapping),
-    PID_dist({PID(&inputDist, &outputDist, &setPointDist,dist0[0],dist0[1],0,-255,255,50,30),PID(&inputDist, &outputDist, &setPointDist,dist1[0],dist1[1],0,-255,255,50,30),PID(&inputDist, &outputDist, &setPointDist,dist2[0],dist2[1],0,-255,255,50,30)}),
-    PID_angle({PID(&inputAngle, &outputAngle, &setPointAngle,angle0[0],angle0[1],0,-255,255,50, 30),PID(&inputAngle, &outputAngle, &setPointAngle,angle1[0],angle2[1],0,-255,255,50, 30),PID(&inputAngle, &outputAngle, &setPointAngle,angle2[0],angle2[1],0,-255,255,50,30)}){
+    PID_dist({PID(&inputDist, &outputDist, &setPointDist,dist0[0],dist0[1],0,-255,255,50,errorDist),PID(&inputDist, &outputDist, &setPointDist,dist1[0],dist1[1],0,-255,255,50,errorDist),PID(&inputDist, &outputDist, &setPointDist,dist2[0],dist2[1],0,-255,255,50,errorDist), PID(&inputDist, &outputDist, &setPointDist,dist3[0],dist3[1],0,-255,255,50,errorDist), PID(&inputDist, &outputDist, &setPointDist,dist4[0],dist4[1],0,-255,255,50,errorDist), PID(&inputDist,&outputDist,&setPointDist, dist5[0], dist5[1], 0,-255,255,50,errorDist)}),
+    PID_angle({PID(&inputAngle, &outputAngle, &setPointAngle,angle0[0],angle0[1],0,-255,255,50, errorAngle),PID(&inputAngle, &outputAngle, &setPointAngle,angle1[0],angle1[1],0,-255,255,50, errorAngle),PID(&inputAngle, &outputAngle, &setPointAngle,angle2[0],angle2[1],0,-255,255,50,errorAngle)}){
         setPointAngle=0;
         setPointDist=0;
         inputAngle=0;
@@ -32,8 +35,10 @@ void FLASH::run() {
     // Serial.println("dist");
     
     bool distCompute = PID_dist[distPID].compute();
+    if (distCompute){Serial.println("dist : ");}
     // Serial.println("angle");
     bool angleCompute = PID_angle[anglePID].compute();
+    if (angleCompute){Serial.println("angle : ");}
     // if (angleOnly){
     //     angleCompute = PID_angle_only.compute();
     // }
@@ -49,14 +54,19 @@ void FLASH::run() {
         if (abs(difPwm) > 6) {
             // Serial.println("difPwm--------------------------------------------------------");
             if (difPwm > 0) {
-                limPwmG = 240;
+                limPwmG = 255;
+                // limPwmG = 115;
+
             } else {
                 limPwmD = 240;
+                // limPwmD = 110;
             }
         }
         else{
-            limPwmG = 210;
-            limPwmD = 200;
+            limPwmG = 200;
+            limPwmD = 180;
+            // limPwmG = 100;
+            // limPwmD = 90;
         }
         if (pwmg > limPwmG) {
             pwmg = limPwmG;
@@ -116,6 +126,11 @@ void FLASH::run() {
             moteur2.setTension(outB);
         }
         else{
+            // if (encoder_compute2->get_speed_tick_s() < 10 && encoder_compute1->get_speed_tick_s()<10 && pwmd > 150 && pwmg > 150)
+            // {
+            //     moteur1.setTension(30);
+            //     moteur2.setTension(30);
+            // }
             moteur1.setTension(pwmg);
             moteur2.setTension(pwmd);
         }
@@ -139,8 +154,12 @@ bool FLASH::isDone(){
 
 void FLASH::resetDone(){
     for (int i = 0; i < 3; i++){
-        PID_dist[i].resetDone();
         PID_angle[i].resetDone();
+        PID_angle[i].resetMI();
+    }
+    for (int i = 0; i <6 ;i++){
+        PID_dist[i].resetDone();
+        PID_dist[i].resetMI();
     }
 }
 

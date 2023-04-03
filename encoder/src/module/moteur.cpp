@@ -25,6 +25,8 @@ void Moteur::setTension(int tension) {
     analogWrite(pinPWM, abs(tension));
 }
 
+
+
 // void Moteur::setTensionKickStart(int tension, int time){
 //     if (tension > 0) { 
 //         digitalWrite(pinPWM, HIGH);

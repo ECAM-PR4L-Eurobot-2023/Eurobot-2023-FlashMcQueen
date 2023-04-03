@@ -22,6 +22,7 @@ PID::PID(double *input, double *output, double *setpoint, double Kp_in, double K
     last_I = 0;
     MI = 0;
     MP = 0;
+    sign = true; 
 }
 
 bool PID::compute()
@@ -32,6 +33,10 @@ bool PID::compute()
         lastTime = now;
         double input = *myInput;
         double error = computeError(*mySetpoint, input);
+        if (sign != error>0){
+            last_I = 0;
+            sign = error>0;
+        }
         if (error < acceptableError && error > -acceptableError)
         {
             error = 0;
@@ -43,6 +48,7 @@ bool PID::compute()
         }
         Serial.print("error :");
         Serial.println(error);
+        Serial.println("acceptableError :" + String(acceptableError));
         // Serial.print("set :");
         // Serial.println(*mySetpoint);
         // Serial.print("in :");
@@ -127,7 +133,7 @@ double PID::computeError(double setpoint, double input)
 
 bool PID::isDone()
 {
-    return done > 5;
+    return done > 7;
 }
 
 void PID::resetDone()
