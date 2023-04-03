@@ -151,3 +151,9 @@ void PID::resetMI()
 {
     last_I = 0;
 }
+
+void PID::resetMinMax()
+{
+    max = 255;
+    min = -255;
+}

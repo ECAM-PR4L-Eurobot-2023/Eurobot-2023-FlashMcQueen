@@ -37,6 +37,7 @@ Moteur moteurL(pinPWM3, pinPWM4);
 
 double mouvementsAngle[3];
 double mouvementsDist[3];
+bool backward;
 
 int counter = 0;
 bool new_displacement = false;
@@ -142,15 +143,16 @@ void setup()
   // mouvementsDist[2] = (double)0;
 
   // new_displacement = true;
+  flash.setMaxSpeed(100);
 
   mouvementsAngle[0] = (double)0;
   mouvementsAngle[1] = (double)0;
   mouvementsAngle[2] = (double)0;
 
 
-  to_go.x = (double)1300;
+  to_go.x = (double)-200;
   to_go.y = (double)0;
-
+  backward = true;
   new_displacement = true;
 }
 
@@ -233,6 +235,7 @@ void updateSetPoints()
     else{
       flash.set_angle(mouvementsAngle[counter]);
       double dist = calcDist(locator.get_position(), to_go);
+      if (backward){dist = -dist;}
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
 
       flash.setAnglePID(0);

@@ -156,10 +156,12 @@ void FLASH::resetDone(){
     for (int i = 0; i < 3; i++){
         PID_angle[i].resetDone();
         PID_angle[i].resetMI();
+        // PID_angle[i].resetMinMax();
     }
     for (int i = 0; i <6 ;i++){
         PID_dist[i].resetDone();
         PID_dist[i].resetMI();
+        // PID_dist[i].resetMinMax();
     }
 }
 
@@ -171,7 +173,12 @@ void FLASH::stop(){
 }
 
 void FLASH::setMaxSpeed(float maxSpeed){
-    PID_dist[distPID].setMinMax(maxSpeed);
+    for (int i = 0; i < 3; i++){
+        PID_angle[i].setMinMax(maxSpeed);
+    }
+    for (int i = 0; i <6 ;i++){
+        PID_dist[i].setMinMax(maxSpeed);
+    }
 }
 
 void FLASH::setAnglePID(int pid){

@@ -32,6 +32,8 @@ class PID{
 
         void resetMI();
 
+        void resetMinMax();
+
     protected:
         
         double Kp;                  // * (P)roportional Tuning Parameter
