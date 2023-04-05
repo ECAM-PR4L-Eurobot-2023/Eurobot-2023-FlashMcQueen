@@ -85,13 +85,7 @@ void setDisplacement(const msgs::Displacement &displacement)
 
   to_go.x = (double)displacement.x;
   to_go.y = (double)displacement.y;
-  // mouvementsDist[0] = (double)0.0;
-  // mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
-  // mouvementsDist[2] = (double)0.0;
 
-  // mouvementsDist[0] = (double)displacement.angle_start;
-  // mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
-  // mouvementsDist[2] = (double)displacement.angle_end;
 
   new_displacement = true;
 
@@ -133,27 +127,6 @@ void setup()
   locator.set_xy(0, 0);
   flash.set_angle(0);
   flash.set_dist(0);
-
-  // mouvementsAngle[0] = (double)0;
-  // mouvementsAngle[1] = (double)0;
-  // mouvementsAngle[2] = (double)0;
-
-  // mouvementsDist[0] = (double)0;
-  // mouvementsDist[1] = ((double)1500*2) / DISTANCE_PER_TICKS;
-  // mouvementsDist[2] = (double)0;
-
-  // new_displacement = true;
-  // flash.setMaxSpeed(100);
-
-  // mouvementsAngle[0] = (double)0;
-  // mouvementsAngle[1] = (double)0;
-  // mouvementsAngle[2] = (double)0;
-
-
-  // to_go.x = (double)-200;
-  // to_go.y = (double)0;
-  // backward = true;
-  // new_displacement = true;
 }
 
 void loop()
@@ -172,43 +145,7 @@ void loop()
   // Serial.print("angle mesured : ");
   // Serial.println(locator.get_angle_degree());
   // delay(100);
-
 }
-
-// void updateSetPoints()
-// {
-//   if (new_displacement && flash.isDone() && counter < 3)
-//   {
-//     flash.set_angle(mouvementsAngle[counter]);
-//     flash.set_dist(mouvementsDist[counter]);
-//     flash.setAngleOnly(mouvementsDist[counter]==0.0 && abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
-//     // Serial.println("angle : " +String(locator.get_angle_degree()));
-//     // encoder_left.reset_ticks_since_last_command();
-//     // encoder_right.reset_ticks_since_last_command();
-//     flash.resetDone();
-//     counter++;
-//   }
-//   else if (counter >= 3 && flash.isDone())
-//   {
-//     counter = 0;
-//     rosApi->pub_distance_reached();
-//     send_data();
-//     new_displacement = false;
-
-
-//   // mouvementsAngle[0] = (double)180;
-//   // mouvementsAngle[1] = (double)180;
-//   // mouvementsAngle[2] = (double)0;
-
-//   // mouvementsDist[0] = (double)0;
-//   // mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
-//   // mouvementsDist[2] = (double)0;
-
-//   // new_displacement = true;
-
-
-//   }
-// }
 
 void updateSetPoints()
 {
@@ -222,15 +159,7 @@ void updateSetPoints()
       flash.setDistPID(5);
       flash.set_angle(mouvementsAngle[counter]);
       flash.set_dist(0.0);
-      // flash.setAngleOnly(abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
       flash.resetDone();
-      // double angle = abs(locator.get_angle_degree() - mouvementsAngle[counter]);
-      // if (angle<45){
-      //   flash.setAnglePID(1);
-      // }
-      // else{
-      //   flash.setAnglePID(2);
-      // }
     }
     else{
       flash.set_angle(mouvementsAngle[counter]);
@@ -275,10 +204,6 @@ void send_data(){
     rosApi->pub_data_all(data::Coordinates{(float)position.x, (float)position.y, (float)position.angle_degree});
 }
 
-// void setTension(int tension) {
-//     analogWrite(pinPWM,map(tension, -255, 255, 51, 102));
-//     analogWrite(pinPWM2,map(tension, -255, 255, 51, 102));
-// }
 
 double calcDist(Position start, Position end){
   return sqrt(pow(end.x-start.x,2)+pow(end.y-start.y,2));
