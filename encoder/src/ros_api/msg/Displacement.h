@@ -4,9 +4,9 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ros.h>
+#include "ros/msg.h"
 
-namespace msgs
+namespace eurobot2023
 {
 
   class Displacement : public ros::Msg
@@ -20,12 +20,15 @@ namespace msgs
       _y_type y;
       typedef float _angle_end_type;
       _angle_end_type angle_end;
+      typedef bool _backward_type;
+      _backward_type backward;
 
     Displacement():
       angle_start(0),
       x(0),
       y(0),
-      angle_end(0)
+      angle_end(0),
+      backward(0)
     {
     }
 
@@ -72,6 +75,13 @@ namespace msgs
       *(outbuffer + offset + 2) = (u_angle_end.base >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (u_angle_end.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->angle_end);
+      union {
+        bool real;
+        uint8_t base;
+      } u_backward;
+      u_backward.real = this->backward;
+      *(outbuffer + offset + 0) = (u_backward.base >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->backward);
       return offset;
     }
 
@@ -122,11 +132,19 @@ namespace msgs
       u_angle_end.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       this->angle_end = u_angle_end.real;
       offset += sizeof(this->angle_end);
+      union {
+        bool real;
+        uint8_t base;
+      } u_backward;
+      u_backward.base = 0;
+      u_backward.base |= ((uint8_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      this->backward = u_backward.real;
+      offset += sizeof(this->backward);
      return offset;
     }
 
     const char * getType(){ return "eurobot2023/Displacement"; };
-    const char * getMD5(){ return "ce019b2fe986924be410f26b6befeb6e"; };
+    const char * getMD5(){ return "9c3e0cb7af3152d38417f4ac3631ef91"; };
 
   };
 

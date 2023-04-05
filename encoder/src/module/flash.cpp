@@ -160,7 +160,7 @@ void FLASH::set_angle(double angle){
 
 void FLASH::set_dist(double dist){
     setPointDist= dist + (double)encoder_compute1->get_ticks_since_last_command() + (double)encoder_compute2->get_ticks_since_last_command();
-    Serial.println("setpointdist"+ String(setPointDist));
+    // Serial.println("setpointdist"+ String(setPointDist));
 }
 
 bool FLASH::isDone(){
@@ -200,12 +200,12 @@ void FLASH::setMaxSpeed(float maxSpeed){
 
 void FLASH::setAnglePID(int pid){
     anglePID = pid;
-    Serial.println("anglePID" + String(anglePID));
+    // Serial.println("anglePID" + String(anglePID));
 }
 
 void FLASH::setDistPID(int pid){
     distPID = pid;
-    Serial.println("distPID" + String(distPID));
+    // Serial.println("distPID" + String(distPID));
 }
 
 int FLASH::getCount(){

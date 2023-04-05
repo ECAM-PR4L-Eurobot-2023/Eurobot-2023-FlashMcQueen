@@ -51,7 +51,7 @@ double d0[2] = {0.2, 0.050}; // bien 10-40 ok jusqua +-60
 double d1[2] = {0.15, 0.03};//bien 80-120
 double d2[2] = {0.14, 0.014};//bien 120-400
 // double d3[2] = {0.16, 0.02}; // bien 400-1100
-double d3[2] = {0.20, 0.03}; // bien 400-1100
+double d3[2] = {0.20, 0.03}; // bien 400-1100 celui qui etait bon avec marchand
 
 double d4[2] = {0.11, 0.028}; // bien 1100-2500
 
@@ -62,7 +62,7 @@ double d5[2] = {0.2, 0.05}; // pour les rotations
 // double a0[2] = {0.37, 0.1};
 // double a0[2] = {0.2, 0.02};
 // double a0[2] = {0.3, 0.05};
-double a0[2] = {0.8, 0.06}; // ok c'est good
+double a0[2] = {0.8, 0.06}; // ok c'est good vers avant
 
 //pour avance {0.8,0.05}
 //pour recule {0.2,0.02}
@@ -70,10 +70,10 @@ double a0[2] = {0.8, 0.06}; // ok c'est good
 // double a0[2] = {0.4, 0.0};
 // double a1[2] = {0.135, 0.015}; // ok 45
 // double a1[2] = {0.14, 0.08}; // ok 45
-double a1[2] = {0.2, 0.02}; // ok 45
+double a1[2] = {0.2, 0.02}; // ok arriere
 
 // double a2[2] = {0.05,0.15};
-double a2[2] = {0.3,0.08};
+double a2[2] = {0.3,0.08}; //en juste angle
 
 FLASH flash(d0,d1,d2,d3,d4,d5,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
@@ -98,9 +98,9 @@ void setDisplacement(const msgs::Displacement &displacement)
   // mouvementsDist[0] = (double)displacement.angle_start;
   // mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
   // mouvementsDist[2] = (double)displacement.angle_end;
-  // backward = displacement.backward;
+  backward = displacement.backward;
   new_displacement = true;
-  counter = 1;
+  // counter = 1;
 
   
 }
@@ -141,16 +141,16 @@ void setup()
   flash.set_angle(0);
   flash.set_dist(0);
 
-  mouvementsAngle[0] = (double)-90;
-  mouvementsAngle[1] = (double)-90;
-  mouvementsAngle[2] = (double)-90;
+  // mouvementsAngle[0] = (double)0;
+  // mouvementsAngle[1] = (double)0;
+  // mouvementsAngle[2] = (double)90;
 
 
-  to_go.x = (double)0;
-  to_go.y = (double)0;
+  // to_go.x = (double)0;
+  // to_go.y = (double)1000;
 
-  backward = false;
-  new_displacement = true;
+  // backward = false;
+  // new_displacement = true;
 }
 
 void loop()
@@ -202,6 +202,7 @@ void updateSetPoints()
       // }
     }
     else{
+      flash.setMaxSpeed(255);
       flash.activateDiff(true);
       flash.setRamp(true);
       flash.set_angle(mouvementsAngle[counter]);
@@ -209,23 +210,23 @@ void updateSetPoints()
       if (backward){dist = -dist; flash.setAnglePID(1);}
       else{flash.setAnglePID(0);}
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
-
+      flash.setDistPID(3);
       // flash.setAnglePID(0);
-      if (dist<70){
-        flash.setDistPID(0);
-      }
-      else if (dist<120){
-        flash.setDistPID(1);
-      }
-      else if (dist<400){
-        flash.setDistPID(2);
-      }
-      else if (dist<1100){
-        flash.setDistPID(3);
-      }
-      else{
-        flash.setDistPID(4);
-      }
+      // if (dist<70){
+      //   flash.setDistPID(0);
+      // }
+      // else if (dist<120){
+      //   flash.setDistPID(1);
+      // }
+      // else if (dist<400){
+      //   flash.setDistPID(2);
+      // }
+      // else if (dist<1100){
+      //   flash.setDistPID(3);
+      // }
+      // else{
+      //   flash.setDistPID(4);
+      // }
 
       flash.resetDone();
     }
@@ -240,21 +241,48 @@ void updateSetPoints()
     send_data();
     new_displacement = false;
 
-  if ( go>0 ){
-    mouvementsAngle[0] = (double)-90*(5-go);
-    mouvementsAngle[1] = (double)-90*(5-go);
-    mouvementsAngle[2] = (double)-90*(5-go);
+  // if ( go>0 ){
+  //     if (go == 3){
+  //         mouvementsAngle[0] = (double)90;
+  //         mouvementsAngle[1] = (double)90;
+  //         mouvementsAngle[2] = (double)locator.get_angle_degree()+90;
 
-    backward = false;
-    new_displacement = true;
 
-    go--;
-    // counter = 1;
-    }
-    else{
-    Serial.println("done");
-    }
-    Serial.println(flash.getCount());
+  //         to_go.x = (double)1000;
+  //         to_go.y = (double)1000;
+
+  //         backward = false;
+  //         new_displacement = true;
+  //     }
+  //     else if (go == 2){
+  //         mouvementsAngle[0] = (double)locator.get_angle_degree();
+  //         mouvementsAngle[1] = (double)locator.get_angle_degree();
+  //         mouvementsAngle[2] = (double)locator.get_angle_degree()+90;
+
+  //         to_go.x = (double)1000;
+  //         to_go.y = (double)0;
+  //         backward = false;
+  //         new_displacement = true;
+  //     }
+  //     else if (go == 1){
+  //         mouvementsAngle[0] = (double)locator.get_angle_degree();
+  //         mouvementsAngle[1] = (double)locator.get_angle_degree();
+  //         mouvementsAngle[2] = (double)locator.get_angle_degree()+90;
+
+  //         to_go.x = (double)0;
+  //         to_go.y = (double)0;
+  //         backward = false;
+  //         new_displacement = true;
+  //   }
+    
+  //   go--;
+  //   Serial.println("go : " + String(go));
+  // }
+  //   else{
+  //   Serial.println("done");
+  //   Serial.println("angle : " + String((double)encoder_left.get_ticks_since_last_command()-(double)encoder_right.get_ticks_since_last_command()));
+  //   }
+  //   Serial.println(flash.getCount());
   }
 
 }
@@ -270,8 +298,8 @@ void send_data(){
 // }
 
 double calcDist(Position start, Position end){
-  Serial.println("positionx "  +String(start.x));
-  Serial.println("positiony "  +String(start.y));
+  // Serial.println("positionx "  +String(start.x));
+  // Serial.println("positiony "  +String(start.y));
   return sqrt(pow(end.x-start.x,2)+pow(end.y-start.y,2));
 }
 
