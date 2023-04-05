@@ -61,7 +61,8 @@ double d5[2] = {0.2, 0.05}; // pour les rotations
 
 // double a0[2] = {0.37, 0.1};
 // double a0[2] = {0.2, 0.02};
-double a0[2] = {0.3, 0.05};
+// double a0[2] = {0.3, 0.05};
+double a0[2] = {0.6, 0.05};
 
 // double a0[2] = {0.4, 0.0};
 // double a1[2] = {0.135, 0.015}; // ok 45
@@ -134,38 +135,28 @@ void setup()
   flash.set_angle(0);
   flash.set_dist(0);
 
-  // mouvementsAngle[0] = (double)0;
-  // mouvementsAngle[1] = (double)0;
-  // mouvementsAngle[2] = (double)0;
-
-  // mouvementsDist[0] = (double)0;
-  // mouvementsDist[1] = ((double)1500*2) / DISTANCE_PER_TICKS;
-  // mouvementsDist[2] = (double)0;
-
-  // new_displacement = true;
-  // flash.setMaxSpeed(100);
-
-  // mouvementsAngle[0] = (double)0;
-  // mouvementsAngle[1] = (double)0;
-  // mouvementsAngle[2] = (double)0;
+  mouvementsAngle[0] = (double)0;
+  mouvementsAngle[1] = (double)0;
+  mouvementsAngle[2] = (double)0;
 
 
-  // to_go.x = (double)-200;
-  // to_go.y = (double)0;
-  // backward = true;
-  // new_displacement = true;
+  to_go.x = (double)1000;
+  to_go.y = (double)0;
+
+  backward = false;
+  new_displacement = true;
 }
 
 void loop()
 {
-  // rosApi->run();
-  // locator.update();
-  // flash.run();
-  // updateSetPoints();
-  // if (millis()- last_time>50){
-  //   last_time = millis();
-  //   send_data();
-  // }
+  rosApi->run();
+  locator.update();
+  flash.run();
+  updateSetPoints();
+  if (millis()- last_time>50){
+    last_time = millis();
+    send_data();
+  }
   // Serial.println("''''''''''''''''''''''''''''''''''");
   // Serial.println(encoder_left.get_distance_tick());
   // Serial.println(encoder_right.get_distance_tick());
@@ -173,44 +164,8 @@ void loop()
   // Serial.println(locator.get_angle_degree());
   // delay(100);
 
-  moteurL.setTension(30);
-  moteurR.setTension(30);
 }
 
-// void updateSetPoints()
-// {
-//   if (new_displacement && flash.isDone() && counter < 3)
-//   {
-//     flash.set_angle(mouvementsAngle[counter]);
-//     flash.set_dist(mouvementsDist[counter]);
-//     flash.setAngleOnly(mouvementsDist[counter]==0.0 && abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
-//     // Serial.println("angle : " +String(locator.get_angle_degree()));
-//     // encoder_left.reset_ticks_since_last_command();
-//     // encoder_right.reset_ticks_since_last_command();
-//     flash.resetDone();
-//     counter++;
-//   }
-//   else if (counter >= 3 && flash.isDone())
-//   {
-//     counter = 0;
-//     rosApi->pub_distance_reached();
-//     send_data();
-//     new_displacement = false;
-
-
-//   // mouvementsAngle[0] = (double)180;
-//   // mouvementsAngle[1] = (double)180;
-//   // mouvementsAngle[2] = (double)0;
-
-//   // mouvementsDist[0] = (double)0;
-//   // mouvementsDist[1] = ((double)1000*2) / DISTANCE_PER_TICKS;
-//   // mouvementsDist[2] = (double)0;
-
-//   // new_displacement = true;
-
-
-//   }
-// }
 
 void updateSetPoints()
 {
