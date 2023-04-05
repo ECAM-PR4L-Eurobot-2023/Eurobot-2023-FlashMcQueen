@@ -92,7 +92,7 @@ void setDisplacement(const msgs::Displacement &displacement)
   // mouvementsDist[0] = (double)displacement.angle_start;
   // mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
   // mouvementsDist[2] = (double)displacement.angle_end;
-
+  backward = displacement.backward;
   new_displacement = true;
 
   
@@ -235,7 +235,7 @@ void updateSetPoints()
     else{
       flash.set_angle(mouvementsAngle[counter]);
       double dist = calcDist(locator.get_position(), to_go);
-      // if (backward){dist = -dist;}
+      if (backward){dist = -dist;}
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
 
       flash.setAnglePID(0);
