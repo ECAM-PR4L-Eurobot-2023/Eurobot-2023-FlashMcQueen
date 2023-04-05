@@ -6,6 +6,7 @@
 
 #define errorAngle 8
 #define errorDist 30
+#define timeout 50
 
 // #define WHEELS_TO_CENTER (120)  // mm
 
@@ -21,6 +22,7 @@ FLASH::FLASH(double dist0[2],double dist1[2], double dist2[2],double dist3[2], d
         limPwmG=210;
         anglePID=0;
         distPID=0;
+        lastTime = 0;
     }
 
 
@@ -33,40 +35,28 @@ void FLASH::run() {
     // Serial.print("inputDist :");
     // Serial.println(inputDist);
     // Serial.println("dist");
-    
-    bool distCompute = PID_dist[distPID].compute();
-    if (distCompute){Serial.println("dist : ");}
-    // Serial.println("angle");
-    bool angleCompute = PID_angle[anglePID].compute();
-    if (angleCompute){Serial.println("angle : ");}
-    // if (angleOnly){
-    //     angleCompute = PID_angle_only.compute();
-    // }
-    // else{
-    //     angleCompute = PID_angle.compute();
-    // }
-    if (distCompute || angleCompute) {
+
+    now = millis();
+    if (now - lastTime>= timeout){
+        lastTime = now;
+        PID_dist[distPID].compute();
+        PID_angle[anglePID].compute();
         Serial.println("dist: " + String(distPID) + " angle: " + String(anglePID));
         pwmg = (outputDist + outputAngle)/2;
         pwmd = (outputDist - outputAngle)/2;
         difPwm = pwmg - pwmd;
-        // Serial.println(difPwm);
         if (abs(difPwm) > 6) {
-            // Serial.println("difPwm--------------------------------------------------------");
             if (difPwm > 0) {
                 limPwmG = 255;
-                // limPwmG = 115;
 
             } else {
                 limPwmD = 240;
-                // limPwmD = 110;
             }
         }
         else{
             limPwmG = 200;
             limPwmD = 180;
-            // limPwmG = 100;
-            // limPwmD = 90;
+
         }
         if (pwmg > limPwmG) {
             pwmg = limPwmG;

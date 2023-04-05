@@ -51,6 +51,7 @@ private:
     // bool angleOnly;
 
     int anglePID, distPID;
+    unsigned long int lastTime, now;
 };
 
 #endif

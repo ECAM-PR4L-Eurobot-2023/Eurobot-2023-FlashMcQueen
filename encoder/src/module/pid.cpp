@@ -27,10 +27,10 @@ PID::PID(double *input, double *output, double *setpoint, double Kp_in, double K
 
 bool PID::compute()
 {
-    unsigned long now = millis();
-    if ((now - lastTime) >= sampleTime)
-    {
-        lastTime = now;
+    // unsigned long now = millis();
+    // if ((now - lastTime) >= sampleTime)
+    // {
+        // lastTime = now;
         double input = *myInput;
         double error = computeError(*mySetpoint, input);
         if (sign != error>0){
@@ -97,8 +97,8 @@ bool PID::compute()
         Serial.println(MP);
 
         return true;
-    }
-    return false;
+    // }
+    // return false;
 }
 
 void PID::setTuning(double Kp_in, double Ki_in, double Kd_in)
