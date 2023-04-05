@@ -46,9 +46,9 @@ bool PID::compute()
         {
             done = 0;
         }
-        Serial.print("error :");
-        Serial.println(error);
-        Serial.println("acceptableError :" + String(acceptableError));
+        // Serial.print("error :");
+        // Serial.println(error);
+        // Serial.println("acceptableError :" + String(acceptableError));
         // Serial.print("set :");
         // Serial.println(*mySetpoint);
         // Serial.print("in :");
@@ -75,12 +75,12 @@ bool PID::compute()
         {
             if (MP + MI > max)
             {
-                Serial.println("max------------------------------");
+                // Serial.println("max------------------------------");
                 MI = max - MP;
             }
             else if (MP + MI < min)
             {
-                Serial.println("min-----------------------------");
+                // Serial.println("min-----------------------------");
                 MI = min - MP;
             }
         }
@@ -91,10 +91,10 @@ bool PID::compute()
 
         // keeps the integral part for the next loop
         last_I = MI;
-        Serial.print("MI:");
-        Serial.println(MI);
-        Serial.print("MP:");
-        Serial.println(MP);
+        // Serial.print("MI:");
+        // Serial.println(MI);
+        // Serial.print("MP:");
+        // Serial.println(MP);
 
         return true;
     // }

@@ -38,11 +38,11 @@ Moteur moteurL(pinPWM3, pinPWM4,1);
 double mouvementsAngle[3];
 double mouvementsDist[3];
 bool backward;
-
+int go = 3;
 int counter = 0;
 bool new_displacement = false;
 
- unsigned long last_time = 0;
+unsigned long last_time = 0;
 
 
 // FLASH flash(0.085, 0.04, 0.30, 0.040,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
@@ -51,7 +51,7 @@ double d0[2] = {0.2, 0.050}; // bien 10-40 ok jusqua +-60
 double d1[2] = {0.15, 0.03};//bien 80-120
 double d2[2] = {0.14, 0.014};//bien 120-400
 // double d3[2] = {0.16, 0.02}; // bien 400-1100
-double d3[2] = {0.18, 0.03}; // bien 400-1100
+double d3[2] = {0.20, 0.03}; // bien 400-1100
 
 double d4[2] = {0.11, 0.028}; // bien 1100-2500
 
@@ -62,14 +62,19 @@ double d5[2] = {0.2, 0.05}; // pour les rotations
 // double a0[2] = {0.37, 0.1};
 // double a0[2] = {0.2, 0.02};
 // double a0[2] = {0.3, 0.05};
-double a0[2] = {0.6, 0.05};
+double a0[2] = {0.8, 0.06}; // ok c'est good
+
+//pour avance {0.8,0.05}
+//pour recule {0.2,0.02}
 
 // double a0[2] = {0.4, 0.0};
 // double a1[2] = {0.135, 0.015}; // ok 45
 // double a1[2] = {0.14, 0.08}; // ok 45
-double a1[2] = {0.2, 0.08}; // ok 45
+double a1[2] = {0.2, 0.02}; // ok 45
 
-double a2[2] = {0.04,0.0055};
+// double a2[2] = {0.05,0.15};
+double a2[2] = {0.3,0.08};
+
 FLASH flash(d0,d1,d2,d3,d4,d5,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 
 
@@ -95,6 +100,7 @@ void setDisplacement(const msgs::Displacement &displacement)
   // mouvementsDist[2] = (double)displacement.angle_end;
   // backward = displacement.backward;
   new_displacement = true;
+  counter = 1;
 
   
 }
@@ -135,12 +141,12 @@ void setup()
   flash.set_angle(0);
   flash.set_dist(0);
 
-  mouvementsAngle[0] = (double)0;
-  mouvementsAngle[1] = (double)0;
-  mouvementsAngle[2] = (double)0;
+  mouvementsAngle[0] = (double)-90;
+  mouvementsAngle[1] = (double)-90;
+  mouvementsAngle[2] = (double)-90;
 
 
-  to_go.x = (double)1000;
+  to_go.x = (double)0;
   to_go.y = (double)0;
 
   backward = false;
@@ -164,6 +170,8 @@ void loop()
   // Serial.println(locator.get_angle_degree());
   // delay(100);
 
+
+
 }
 
 
@@ -173,14 +181,18 @@ void updateSetPoints()
   {
     // flash.setAnglePID(0);
     // flash.setDistPID(0);
-    Serial.println("counter : " + String(counter));
+    // Serial.println("counter : " + String(counter));
     if (counter !=1){
-      flash.setAnglePID(1);
-      flash.setDistPID(5);
+      flash.setMaxSpeed(150);
+      flash.activateDiff(false);
+      flash.setRamp(true);
+      flash.setAnglePID(2);
+      flash.setDistPID(0);
       flash.set_angle(mouvementsAngle[counter]);
       flash.set_dist(0.0);
-      // flash.setAngleOnly(abs(locator.get_angle_degree() - mouvementsAngle[counter])>45);
       flash.resetDone();
+
+
       // double angle = abs(locator.get_angle_degree() - mouvementsAngle[counter]);
       // if (angle<45){
       //   flash.setAnglePID(1);
@@ -190,12 +202,15 @@ void updateSetPoints()
       // }
     }
     else{
+      flash.activateDiff(true);
+      flash.setRamp(true);
       flash.set_angle(mouvementsAngle[counter]);
       double dist = calcDist(locator.get_position(), to_go);
-      if (backward){dist = -dist;}
+      if (backward){dist = -dist; flash.setAnglePID(1);}
+      else{flash.setAnglePID(0);}
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
 
-      flash.setAnglePID(0);
+      // flash.setAnglePID(0);
       if (dist<70){
         flash.setDistPID(0);
       }
@@ -224,7 +239,24 @@ void updateSetPoints()
     rosApi->pub_distance_reached();
     send_data();
     new_displacement = false;
+
+  if ( go>0 ){
+    mouvementsAngle[0] = (double)-90*(5-go);
+    mouvementsAngle[1] = (double)-90*(5-go);
+    mouvementsAngle[2] = (double)-90*(5-go);
+
+    backward = false;
+    new_displacement = true;
+
+    go--;
+    // counter = 1;
+    }
+    else{
+    Serial.println("done");
+    }
+    Serial.println(flash.getCount());
   }
+
 }
 
 void send_data(){
@@ -238,6 +270,8 @@ void send_data(){
 // }
 
 double calcDist(Position start, Position end){
+  Serial.println("positionx "  +String(start.x));
+  Serial.println("positiony "  +String(start.y));
   return sqrt(pow(end.x-start.x,2)+pow(end.y-start.y,2));
 }
 

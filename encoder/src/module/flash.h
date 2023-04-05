@@ -27,6 +27,11 @@ public:
     void setDistPID(int);
 
     void setMaxSpeed(float);
+
+    int getCount();
+
+    void setRamp(bool);
+    void activateDiff(bool);
 private:
 
     PID PID_dist[6];
@@ -44,14 +49,15 @@ private:
     double inputAngle ;
     double outputAngle;
 
-    double pwmg, pwmd;
+    double pwmg, pwmd, lastpwmg, lastpwmd;
     double limPwmG, limPwmD, difPwm;
 
-    bool dynamicMapping;
+    bool dynamicMapping, activateRamp, activateDif;
     // bool angleOnly;
 
     int anglePID, distPID;
     unsigned long int lastTime, now;
+    int count;
 };
 
 #endif

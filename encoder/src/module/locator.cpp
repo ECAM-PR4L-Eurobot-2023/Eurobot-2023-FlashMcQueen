@@ -36,8 +36,8 @@ bool Locator::update(void) {
         position.angle_radian = fmod(position.angle_radian, MAX_ANGLE);
 
         // Keep the angle between [MIN_ANGLE] and [MAX_ANGLE]
-        if (position.angle_radian < MIN_ANGLE)
-            position.angle_radian = MAX_ANGLE - position.angle_radian;
+        // if (position.angle_radian < MIN_ANGLE)
+        //     position.angle_radian = MAX_ANGLE - position.angle_radian;
 
         // Convert to degree
         position.angle_degree = RADIAN_TO_DEGREE(position.angle_radian);

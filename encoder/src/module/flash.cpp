@@ -4,9 +4,10 @@
 #include "encoder_compute.h"
 #include "locator.h"  //to get wheels to center definition
 
-#define errorAngle 8
-#define errorDist 30
+#define errorAngle 50
+#define errorDist 250
 #define timeout 50
+#define ramp 10
 
 // #define WHEELS_TO_CENTER (120)  // mm
 
@@ -23,12 +24,16 @@ FLASH::FLASH(double dist0[2],double dist1[2], double dist2[2],double dist3[2], d
         anglePID=0;
         distPID=0;
         lastTime = 0;
+        count = 0;
+        lastpwmg = 0;
+        lastpwmd = 0;
+        activateRamp = true;
+        activateDif = true;
     }
 
 
 void FLASH::run() {
-    inputDist = (double)encoder_compute1->get_ticks_since_last_command()+(double)encoder_compute2->get_ticks_since_last_command();
-    inputAngle = (double)encoder_compute1->get_ticks_since_last_command()-(double)encoder_compute2->get_ticks_since_last_command();
+
     // Serial.println((double)encoder_compute1->get_ticks_since_last_command());
     // Serial.print("inputAngle :");
     // Serial.println(inputAngle);
@@ -38,26 +43,36 @@ void FLASH::run() {
 
     now = millis();
     if (now - lastTime>= timeout){
+        count++;
         lastTime = now;
+        inputDist = (double)encoder_compute1->get_ticks_since_last_command()+(double)encoder_compute2->get_ticks_since_last_command();
+        inputAngle = (double)encoder_compute1->get_ticks_since_last_command()-(double)encoder_compute2->get_ticks_since_last_command();
         PID_dist[distPID].compute();
         PID_angle[anglePID].compute();
-        Serial.println("dist: " + String(distPID) + " angle: " + String(anglePID));
+        // Serial.println("dist: " + String(distPID) + " angle: " + String(anglePID));
         pwmg = (outputDist + outputAngle)/2;
         pwmd = (outputDist - outputAngle)/2;
-        difPwm = pwmg - pwmd;
-        if (abs(difPwm) > 6) {
-            if (difPwm > 0) {
-                limPwmG = 255;
 
-            } else {
-                limPwmD = 240;
+
+        if (activateDif){
+            difPwm = pwmg - pwmd;
+            if (abs(difPwm) > 6) {
+                if (difPwm > 0) {
+                    limPwmG = 255;
+                    limPwmD = 180;
+
+                } else {
+                    limPwmD = 240;
+                    limPwmG = 200;
+                }
+            }
+            else{
+                limPwmG = 200;
+                limPwmD = 180;
+
             }
         }
-        else{
-            limPwmG = 200;
-            limPwmD = 180;
 
-        }
         if (pwmg > limPwmG) {
             pwmg = limPwmG;
         }
@@ -121,6 +136,17 @@ void FLASH::run() {
             //     moteur1.setTension(30);
             //     moteur2.setTension(30);
             // }
+            if(activateRamp){
+                if (pwmg-lastpwmg > ramp){
+                    pwmg = lastpwmg + ramp;
+                    lastpwmg = pwmg;
+                }
+                if (pwmd-lastpwmd > ramp){
+                    pwmd = lastpwmd + ramp;
+                    lastpwmd = pwmd;
+                }
+            }
+
             moteur1.setTension(pwmg);
             moteur2.setTension(pwmd);
         }
@@ -134,6 +160,7 @@ void FLASH::set_angle(double angle){
 
 void FLASH::set_dist(double dist){
     setPointDist= dist + (double)encoder_compute1->get_ticks_since_last_command() + (double)encoder_compute2->get_ticks_since_last_command();
+    Serial.println("setpointdist"+ String(setPointDist));
 }
 
 bool FLASH::isDone(){
@@ -173,8 +200,22 @@ void FLASH::setMaxSpeed(float maxSpeed){
 
 void FLASH::setAnglePID(int pid){
     anglePID = pid;
+    Serial.println("anglePID" + String(anglePID));
 }
 
 void FLASH::setDistPID(int pid){
     distPID = pid;
+    Serial.println("distPID" + String(distPID));
+}
+
+int FLASH::getCount(){
+    return count;
+}
+
+void FLASH::setRamp(bool r){
+    activateRamp = r;
+}
+
+void FLASH::activateDiff(bool d){
+    activateDif = d;
 }
