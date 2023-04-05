@@ -1,8 +1,10 @@
 #include "moteur.h"
 #include <Arduino.h>
 
-Moteur::Moteur(int pinPWM, int pinDIR):
-    pinPWM(pinPWM), pinDIR(pinDIR){}
+#define FREQ 5000
+
+Moteur::Moteur(int pinPWM, int pinDIR, int channel):
+    pinPWM(pinPWM), pinDIR(pinDIR), channel(channel){}
 
 void Moteur::begin(){
     // Reset the pin state
@@ -13,6 +15,10 @@ void Moteur::begin(){
     pinMode(pinPWM, OUTPUT);
     pinMode(pinDIR, OUTPUT);
 
+    ledcSetup(channel, FREQ, 8);
+    ledcAttachPin(pinPWM, channel);
+
+
 }
 
 void Moteur::setTension(int tension) {
@@ -22,7 +28,8 @@ void Moteur::setTension(int tension) {
     else if (tension < 0) {
         digitalWrite(pinDIR, LOW);
     }
-    analogWrite(pinPWM, abs(tension));
+    ledcWrite(channel, abs(tension));
+    // analogWrite(pinPWM, abs(tension));
 }
 
 
