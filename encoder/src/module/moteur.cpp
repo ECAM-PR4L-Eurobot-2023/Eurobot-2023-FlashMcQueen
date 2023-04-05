@@ -1,7 +1,7 @@
 #include "moteur.h"
 #include <Arduino.h>
 
-#define FREQ 5000
+#define FREQ 30000
 
 Moteur::Moteur(int pinPWM, int pinDIR, int channel):
     pinPWM(pinPWM), pinDIR(pinDIR), channel(channel){}

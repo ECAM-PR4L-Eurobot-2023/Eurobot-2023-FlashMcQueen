@@ -158,14 +158,14 @@ void setup()
 
 void loop()
 {
-  rosApi->run();
-  locator.update();
-  flash.run();
-  updateSetPoints();
-  if (millis()- last_time>50){
-    last_time = millis();
-    send_data();
-  }
+  // rosApi->run();
+  // locator.update();
+  // flash.run();
+  // updateSetPoints();
+  // if (millis()- last_time>50){
+  //   last_time = millis();
+  //   send_data();
+  // }
   // Serial.println("''''''''''''''''''''''''''''''''''");
   // Serial.println(encoder_left.get_distance_tick());
   // Serial.println(encoder_right.get_distance_tick());
@@ -173,6 +173,8 @@ void loop()
   // Serial.println(locator.get_angle_degree());
   // delay(100);
 
+  moteurL.setTension(30);
+  moteurR.setTension(30);
 }
 
 // void updateSetPoints()
