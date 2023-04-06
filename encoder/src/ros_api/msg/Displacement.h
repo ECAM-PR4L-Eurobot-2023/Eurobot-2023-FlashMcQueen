@@ -5,7 +5,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ros.h>
-// #include "ros/msg.h"
 
 namespace msgs
 {

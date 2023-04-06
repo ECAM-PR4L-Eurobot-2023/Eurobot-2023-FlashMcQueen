@@ -3,7 +3,7 @@
 
 #include "encoder_compute.h"
 
-#define WHEELS_TO_CENTER (120)  // mm
+#define WHEELS_TO_CENTER (121)  // mm
 // #define WHEELS_TO_CENTER (152)  // mm
 #define DEFAULT_TIMEOUT (50)  // ms
 
