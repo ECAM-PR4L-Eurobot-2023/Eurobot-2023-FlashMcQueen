@@ -4,9 +4,10 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#include "ros/msg.h"
+#include <ros.h>
+// #include "ros/msg.h"
 
-namespace eurobot2023
+namespace msgs
 {
 
   class Displacement : public ros::Msg

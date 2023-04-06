@@ -91,16 +91,10 @@ void setDisplacement(const msgs::Displacement &displacement)
 
   to_go.x = (double)displacement.x;
   to_go.y = (double)displacement.y;
-  // mouvementsDist[0] = (double)0.0;
-  // mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
-  // mouvementsDist[2] = (double)0.0;
 
-  // mouvementsDist[0] = (double)displacement.angle_start;
-  // mouvementsDist[1] = ((double)displacement.distance*2) / DISTANCE_PER_TICKS;
-  // mouvementsDist[2] = (double)displacement.angle_end;
-  backward = displacement.backward;
+  backward = (bool)displacement.backward;
   new_displacement = true;
-  // counter = 1;
+
 
   
 }
