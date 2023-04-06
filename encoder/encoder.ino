@@ -23,6 +23,8 @@
 #define pinPWM3 32
 #define pinPWM4 33
 
+#define pinLimitSwitchArr 27
+
 RosApiCallbacks callbacks{};
 RosApi *rosApi;
 
@@ -38,13 +40,17 @@ Moteur moteurL(pinPWM3, pinPWM4,1);
 double mouvementsAngle[3];
 double mouvementsDist[3];
 bool backward;
+int limitSwitch = 0;
+int prevLimitSwitch = 0;
 int go = 3;
 int counter = 0;
 bool new_displacement = false;
+double maxSpeedDist = 255;
 
-unsigned long last_time = 0;
+unsigned long int last_time = 0;
+unsigned long int lastTimeSwitch = 0;
 
-
+unsigned long int now = 0;
 // FLASH flash(0.085, 0.04, 0.30, 0.040,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 // FLASH flash(0.085, 0.04, 0.4, 0.0,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 double d0[2] = {0.2, 0.050}; // bien 10-40 ok jusqua +-60
@@ -93,10 +99,7 @@ void setDisplacement(const msgs::Displacement &displacement)
   to_go.y = (double)displacement.y;
 
   backward = (bool)displacement.backward;
-  new_displacement = true;
-
-
-  
+  new_displacement = true;  
 }
 
 
@@ -111,13 +114,15 @@ void stop(const std_msgs::Empty &stop)
 
 void setMaxSpeed(const std_msgs::Float32 &maxSpeed)
 {
-  flash.setMaxSpeed(maxSpeed.data);
+  // flash.setMaxSpeed(maxSpeed.data);
+  maxSpeedDist = maxSpeed.data;
 }
 
 void setup()
 {
   Serial.begin(115200);
 
+  pinMode(pinLimitSwitchArr, INPUT_PULLUP);
 
   moteurL.begin();
   moteurR.begin();
@@ -137,7 +142,7 @@ void setup()
 
   // mouvementsAngle[0] = (double)0;
   // mouvementsAngle[1] = (double)0;
-  // mouvementsAngle[2] = (double)90;
+  // mouvementsAngle[2] = (double)0;
 
 
   // to_go.x = (double)0;
@@ -157,14 +162,14 @@ void loop()
     last_time = millis();
     send_data();
   }
-  // Serial.println("''''''''''''''''''''''''''''''''''");
-  // Serial.println(encoder_left.get_distance_tick());
-  // Serial.println(encoder_right.get_distance_tick());
-  // Serial.print("angle mesured : ");
-  // Serial.println(locator.get_angle_degree());
-  // delay(100);
-
-
+  
+  limitSwitch = !digitalRead(pinLimitSwitchArr)<<0;
+  now = millis();
+  if (prevLimitSwitch != limitSwitch && now - lastTimeSwitch>= 30){
+    lastTimeSwitch = now;
+    rosApi->pub_urgency_stop(limitSwitch);
+    prevLimitSwitch = limitSwitch;
+  }
 
 }
 
@@ -196,7 +201,9 @@ void updateSetPoints()
       // }
     }
     else{
-      flash.setMaxSpeed(255);
+      flash.setMaxSpeed(maxSpeedDist);
+      // flash.setMaxSpeed(100);
+
       flash.activateDiff(true);
       flash.setRamp(true);
       flash.set_angle(mouvementsAngle[counter]);

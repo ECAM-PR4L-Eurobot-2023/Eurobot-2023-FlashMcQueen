@@ -191,10 +191,10 @@ void FLASH::stop(){
 
 void FLASH::setMaxSpeed(float maxSpeed){
     for (int i = 0; i < 3; i++){
-        PID_angle[i].setMinMax(maxSpeed);
+        PID_angle[i].setMinMax((double)maxSpeed);
     }
     for (int i = 0; i <6 ;i++){
-        PID_dist[i].setMinMax(maxSpeed);
+        PID_dist[i].setMinMax((double)maxSpeed);
     }
 }
 
