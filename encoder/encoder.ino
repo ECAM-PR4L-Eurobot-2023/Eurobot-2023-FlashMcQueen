@@ -30,7 +30,7 @@ RosApi *rosApi;
 
 EncoderCompute encoder_left(35, 34, COMPUTE_TIMEOUT);
 EncoderCompute encoder_right(23, 22, COMPUTE_TIMEOUT);
-Locator locator(&encoder_left, &encoder_right);
+Locator locator(&encoder_left, &encoder_right,COMPUTE_TIMEOUT);
 
 // Position position{0, 0, 0, 0};
 
@@ -81,7 +81,7 @@ double a1[2] = {0.2, 0.02}; // ok arriere
 // double a2[2] = {0.05,0.15};
 double a2[2] = {0.3,0.08}; //en juste angle
 
-FLASH flash(d0,d1,d2,d3,d4,d5,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, 0);
+FLASH flash(d0,d1,d2,d3,d4,d5,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, &locator);
 
 
 
@@ -107,9 +107,14 @@ void setPosition(const msgs::Position &position){
   locator.set_xy(position.x, position.y);
 }
 
+void setRotation(const std_msgs::Float32 &rotation){
+  locator.set_angle_radian((double)rotation.data);
+}
+
 void stop(const std_msgs::Empty &stop)
 {
   flash.stop();
+  endMouvement();
 }
 
 void setMaxSpeed(const std_msgs::Float32 &maxSpeed)
@@ -178,9 +183,6 @@ void updateSetPoints()
 {
   if (new_displacement && flash.isDone() && counter < 3)
   {
-    // flash.setAnglePID(0);
-    // flash.setDistPID(0);
-    // Serial.println("counter : " + String(counter));
     if (counter !=1){
       flash.setMaxSpeed(150);
       flash.activateDiff(false);
@@ -190,7 +192,6 @@ void updateSetPoints()
       flash.set_angle(mouvementsAngle[counter]);
       flash.set_dist(0.0);
       flash.resetDone();
-
 
       // double angle = abs(locator.get_angle_degree() - mouvementsAngle[counter]);
       // if (angle<45){
@@ -202,8 +203,6 @@ void updateSetPoints()
     }
     else{
       flash.setMaxSpeed(maxSpeedDist);
-      // flash.setMaxSpeed(100);
-
       flash.activateDiff(true);
       flash.setRamp(true);
       flash.set_angle(mouvementsAngle[counter]);
@@ -236,54 +235,9 @@ void updateSetPoints()
   }
   else if (counter >= 3 && flash.isDone())
   {
-    flash.resetDone();
-    counter = 0;
+    endMouvement();
     rosApi->pub_distance_reached();
-    send_data();
-    new_displacement = false;
 
-  // if ( go>0 ){
-  //     if (go == 3){
-  //         mouvementsAngle[0] = (double)90;
-  //         mouvementsAngle[1] = (double)90;
-  //         mouvementsAngle[2] = (double)locator.get_angle_degree()+90;
-
-
-  //         to_go.x = (double)1000;
-  //         to_go.y = (double)1000;
-
-  //         backward = false;
-  //         new_displacement = true;
-  //     }
-  //     else if (go == 2){
-  //         mouvementsAngle[0] = (double)locator.get_angle_degree();
-  //         mouvementsAngle[1] = (double)locator.get_angle_degree();
-  //         mouvementsAngle[2] = (double)locator.get_angle_degree()+90;
-
-  //         to_go.x = (double)1000;
-  //         to_go.y = (double)0;
-  //         backward = false;
-  //         new_displacement = true;
-  //     }
-  //     else if (go == 1){
-  //         mouvementsAngle[0] = (double)locator.get_angle_degree();
-  //         mouvementsAngle[1] = (double)locator.get_angle_degree();
-  //         mouvementsAngle[2] = (double)locator.get_angle_degree()+90;
-
-  //         to_go.x = (double)0;
-  //         to_go.y = (double)0;
-  //         backward = false;
-  //         new_displacement = true;
-  //   }
-    
-  //   go--;
-  //   Serial.println("go : " + String(go));
-  // }
-  //   else{
-  //   Serial.println("done");
-  //   Serial.println("angle : " + String((double)encoder_left.get_ticks_since_last_command()-(double)encoder_right.get_ticks_since_last_command()));
-  //   }
-  //   Serial.println(flash.getCount());
   }
 
 }
@@ -293,14 +247,14 @@ void send_data(){
     rosApi->pub_data_all(data::Coordinates{(float)position.x, (float)position.y, (float)position.angle_degree});
 }
 
-// void setTension(int tension) {
-//     analogWrite(pinPWM,map(tension, -255, 255, 51, 102));
-//     analogWrite(pinPWM2,map(tension, -255, 255, 51, 102));
-// }
 
 double calcDist(Position start, Position end){
-  // Serial.println("positionx "  +String(start.x));
-  // Serial.println("positiony "  +String(start.y));
   return sqrt(pow(end.x-start.x,2)+pow(end.y-start.y,2));
 }
 
+void endMouvement(){
+    flash.resetDone();
+    counter = 0;
+    send_data();
+    new_displacement = false;
+}

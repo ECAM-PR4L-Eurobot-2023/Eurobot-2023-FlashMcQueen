@@ -79,3 +79,8 @@ void Locator::set_xy(double x, double y){
     position.x = x;
     position.y = y;
 }
+
+void Locator::set_angle_radian(double angle){
+    position.angle_radian = angle;
+    position.angle_degree = RADIAN_TO_DEGREE(angle);
+}

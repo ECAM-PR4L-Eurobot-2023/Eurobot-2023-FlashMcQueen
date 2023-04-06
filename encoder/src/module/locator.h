@@ -32,6 +32,7 @@ public:
     Position get_position(void);
     double get_delta_distance(void);
     void set_xy(double, double);
+    void set_angle_radian(double);
 };
 
 #endif /* LOCATOR_H */
