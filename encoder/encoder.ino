@@ -233,7 +233,7 @@ void updateSetPoints()
 
     counter++;
   }
-  else if (counter >= 3 && flash.isDone())
+  else if (counter >= 3 && flash.isDone() && new_displacement)
   {
     endMouvement();
     rosApi->pub_distance_reached();
