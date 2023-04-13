@@ -19,5 +19,6 @@
 #define TOPIC_GET_PID_ANGLE         "/robot/pid/angle/get"
 #define TOPIC_SET_MAX_SPEED         "/robot/max-speed/set"
 #define TOPIC_SET_STOP              "/robot/stop"
+#define TOPIC_MOUVEMENT_DONE        "/robot/mouvement/done"
 
 #endif /* TOPIC_H */

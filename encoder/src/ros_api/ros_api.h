@@ -42,11 +42,13 @@ class RosApi {
     std_msgs::Empty distance_reached_msg;
     std_msgs::Int16 urgency_stop_msg;
     msgs::Coordinate data_all_msg;
+    std_msgs::Int16 mouvement_done_msg;
 
     // Publishers
     ros::Publisher distance_reached_pub;
     ros::Publisher urgency_stop_pub;
     ros::Publisher data_all_pub;
+    ros::Publisher mouvement_done_pub;
 
     // Subscribers
     ros::Subscriber<msgs::Displacement> set_displacement_sub;
@@ -69,6 +71,7 @@ public:
     void pub_distance_reached(void);
     void pub_urgency_stop(int);
     void pub_data_all(data::Coordinates);
+    void pub_mouvement_done(int);
 };
 
 #endif /* ROS_API_H */

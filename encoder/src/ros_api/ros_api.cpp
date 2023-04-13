@@ -6,6 +6,7 @@ RosApi::RosApi(RosApiCallbacks *callbacks, long baudrate) :
     distance_reached_pub(TOPIC_DISTANCE_REACHED, &distance_reached_msg),
     urgency_stop_pub(TOPIC_URGENCY_STOP, &urgency_stop_msg),
     data_all_pub(TOPIC_DATA_ALL, &data_all_msg),
+    mouvement_done_pub(TOPIC_MOUVEMENT_DONE, &mouvement_done_msg),
     set_displacement_sub(TOPIC_SET_DISPLACEMENT, callbacks->on_set_displacement),
     set_position_sub(TOPIC_SET_POSITION, callbacks->on_set_position),
     set_rotation_sub(TOPIC_SET_ROTATION, callbacks->on_set_rotation),
@@ -29,6 +30,7 @@ void RosApi::begin(void) {
     nh.advertise(distance_reached_pub);
     nh.advertise(urgency_stop_pub);
     nh.advertise(data_all_pub);
+    nh.advertise(mouvement_done_pub);
 
     // // Subscribe
     nh.subscribe(set_displacement_sub);
@@ -62,4 +64,9 @@ void RosApi::pub_data_all(data::Coordinates coordinates) {
     data_all_msg.y = coordinates.y;
     data_all_msg.angle = coordinates.angle;
     data_all_pub.publish(&data_all_msg);
+}
+
+void RosApi::pub_mouvement_done(int count) {
+    mouvement_done_msg.data = (int16_t)count;
+    mouvement_done_pub.publish(&mouvement_done_msg);
 }

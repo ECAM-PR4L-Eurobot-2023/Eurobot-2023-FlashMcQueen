@@ -230,7 +230,7 @@ void updateSetPoints()
 
       flash.resetDone();
     }
-
+    rosApi->pub_mouvement_done(counter);
     counter++;
   }
   else if (counter >= 3 && flash.isDone() && new_displacement)
