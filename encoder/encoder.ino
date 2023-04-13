@@ -28,8 +28,8 @@
 RosApiCallbacks callbacks{};
 RosApi *rosApi;
 
-EncoderCompute encoder_left(35, 34, COMPUTE_TIMEOUT);
-EncoderCompute encoder_right(23, 22, COMPUTE_TIMEOUT);
+EncoderCompute encoder_left(34, 35, COMPUTE_TIMEOUT);
+EncoderCompute encoder_right(22, 23, COMPUTE_TIMEOUT);
 Locator locator(&encoder_left, &encoder_right,COMPUTE_TIMEOUT);
 
 // Position position{0, 0, 0, 0};
@@ -53,13 +53,13 @@ unsigned long int lastTimeSwitch = 0;
 unsigned long int now = 0;
 // FLASH flash(0.085, 0.04, 0.30, 0.040,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
 // FLASH flash(0.085, 0.04, 0.4, 0.0,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
-double d0[2] = {0.2, 0.050}; // bien 10-40 ok jusqua +-60
-double d1[2] = {0.15, 0.03};//bien 80-120
-double d2[2] = {0.14, 0.014};//bien 120-400
-// double d3[2] = {0.16, 0.02}; // bien 400-1100
-double d3[2] = {0.20, 0.03}; // bien 400-1100 celui qui etait bon avec marchand
+double d0[2] = {0.2, 0.050}; // pour les rotation
+double d1[2] = {0.15, 0.03};
+double d2[2] = {0.14, 0.014};
 
-double d4[2] = {0.11, 0.028}; // bien 1100-2500
+double d3[2] = {0.20, 0.03}; // celui qui etait bon avec marchand en mouvement droit
+
+double d4[2] = {0.11, 0.028};
 
 // double d5[2] = {0.8, 0.3}; // pour les rotations
 double d5[2] = {0.2, 0.05}; // pour les rotations
@@ -207,8 +207,8 @@ void updateSetPoints()
       flash.setRamp(true);
       flash.set_angle(mouvementsAngle[counter]);
       double dist = calcDist(locator.get_position(), to_go);
-      if (backward){dist = -dist; flash.setAnglePID(1);}
-      else{flash.setAnglePID(0);}
+      if (backward){dist = -dist; flash.setAnglePID(0);}
+      else{flash.setAnglePID(1);}
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
       flash.setDistPID(3);
       // flash.setAnglePID(0);

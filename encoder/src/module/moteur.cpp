@@ -23,10 +23,10 @@ void Moteur::begin(){
 
 void Moteur::setTension(int tension) {
     if (tension > 0) {
-        digitalWrite(pinDIR, HIGH);
+        digitalWrite(pinDIR, LOW);
     }
     else if (tension < 0) {
-        digitalWrite(pinDIR, LOW);
+        digitalWrite(pinDIR, HIGH);
     }
     ledcWrite(channel, abs(tension));
     // analogWrite(pinPWM, abs(tension));
