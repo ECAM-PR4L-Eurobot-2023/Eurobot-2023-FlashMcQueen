@@ -34,8 +34,8 @@ Locator locator(&encoder_left, &encoder_right,COMPUTE_TIMEOUT);
 
 // Position position{0, 0, 0, 0};
 
-Moteur moteurR(pinPWM, pinPWM2, 0);
-Moteur moteurL(pinPWM3, pinPWM4,1);
+Moteur moteurL(pinPWM, pinPWM2, 0);
+Moteur moteurR(pinPWM3, pinPWM4,1);
 
 double mouvementsAngle[3];
 double mouvementsDist[3];
