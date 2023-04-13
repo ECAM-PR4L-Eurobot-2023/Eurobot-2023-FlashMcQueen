@@ -40,7 +40,7 @@ void FLASH::run() {
         count++;
         lastTime = now;
         inputDist = (double)encoder_compute1->get_ticks_since_last_command()+(double)encoder_compute2->get_ticks_since_last_command();
-        inputAngle =  (2* WHEELS_TO_CENTER* locator->get_angle_radian())/(DISTANCE_PER_TICKS);
+        inputAngle =  -(2* WHEELS_TO_CENTER* locator->get_angle_radian())/(DISTANCE_PER_TICKS);
         // inputAngle = (double)encoder_compute1->get_ticks_since_last_command()-(double)encoder_compute2->get_ticks_since_last_command();
         PID_dist[distPID].compute();
         PID_angle[anglePID].compute();

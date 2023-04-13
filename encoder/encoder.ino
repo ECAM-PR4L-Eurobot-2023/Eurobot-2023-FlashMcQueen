@@ -28,8 +28,8 @@
 RosApiCallbacks callbacks{};
 RosApi *rosApi;
 
-EncoderCompute encoder_left(34, 35, COMPUTE_TIMEOUT);
-EncoderCompute encoder_right(22, 23, COMPUTE_TIMEOUT);
+EncoderCompute encoder_right(34, 35, COMPUTE_TIMEOUT);
+EncoderCompute encoder_left(22, 23, COMPUTE_TIMEOUT);
 Locator locator(&encoder_left, &encoder_right,COMPUTE_TIMEOUT);
 
 // Position position{0, 0, 0, 0};
