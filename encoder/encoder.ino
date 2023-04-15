@@ -109,6 +109,7 @@ void setPosition(const msgs::Position &position){
 
 void setRotation(const std_msgs::Float32 &rotation){
   locator.set_angle_radian((double)rotation.data);
+  flash.set_angle(locator.get_angle_degree());
 }
 
 void stop(const std_msgs::Empty &stop)
@@ -136,6 +137,7 @@ void setup()
   callbacks.on_set_position = setPosition;
   callbacks.on_set_stop = stop;
   callbacks.on_set_max_speed = setMaxSpeed;
+  callbacks.on_set_rotation = setRotation;
   rosApi = new RosApi(&callbacks);
   rosApi->begin();
   delay(2000);
@@ -176,6 +178,7 @@ void loop()
     prevLimitSwitch = limitSwitch;
   }
 
+  delay(2);
 }
 
 
