@@ -32,16 +32,16 @@ bool Locator::update(void) {
         double delta_distance = (delta_distance_left + delta_distance_right) / 2.0;
         double delta_angle = (delta_distance_left - delta_distance_right) / (WHEELS_TO_CENTER * 2.0);
 
-        double delta_x = delta_distance * sin(position.angle_radian + (delta_angle / 2));
-        double delta_y = delta_distance * cos(position.angle_radian + (delta_angle / 2));
+        double delta_x = delta_distance * sin(position.angle_radian + (delta_angle / 2.0));
+        double delta_y = delta_distance * cos(position.angle_radian + (delta_angle / 2.0));
 
         // Calcul new position
-        if (delta_angle != 0) {
-            delta_x = delta_distance * ((sin(position.angle_radian) * sin(delta_angle) / delta_angle) +
-                (cos(position.angle_radian) * (1 - cos(delta_angle)) / delta_angle));
-            delta_y = delta_distance * ((cos(position.angle_radian) * sin(delta_angle) / 
-                delta_angle) + (-sin(position.angle_radian) * (1 - cos(delta_angle)) / delta_angle));
-        }
+        // if (delta_angle != 0) {
+        //     delta_x = delta_distance * ((sin(position.angle_radian) * sin(delta_angle) / delta_angle) +
+        //         (cos(position.angle_radian) * (1 - cos(delta_angle)) / delta_angle));
+        //     delta_y = delta_distance * ((cos(position.angle_radian) * sin(delta_angle) / 
+        //         delta_angle) + (-sin(position.angle_radian) * (1 - cos(delta_angle)) / delta_angle));
+        // }
         
         position.x += delta_x;
         position.y += delta_y;
@@ -49,6 +49,10 @@ bool Locator::update(void) {
         // Calcul new angle
         position.angle_radian += delta_angle;
         position.angle_radian = fmod(position.angle_radian, MAX_ANGLE);
+
+        // if (position.angle_radian < MIN_ANGLE) {
+        //     position.angle_radian = MAX_ANGLE + position.angle_radian;
+        // }
 
         // Convert to degree
         position.angle_degree = RADIAN_TO_DEGREE(position.angle_radian);
