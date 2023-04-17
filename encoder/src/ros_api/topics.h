@@ -20,5 +20,7 @@
 #define TOPIC_SET_MAX_SPEED         "/robot/max-speed/set"
 #define TOPIC_SET_STOP              "/robot/stop"
 #define TOPIC_MOUVEMENT_DONE        "/robot/mouvement/done"
+#define TOPIC_WIGGLE                "/robot/wiggle"
+#define TOPIC_WIGGLE_DONE           "/robot/wiggle/done"
 
 #endif /* TOPIC_H */

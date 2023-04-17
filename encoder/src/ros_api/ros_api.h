@@ -31,6 +31,7 @@ typedef struct {
     void (*on_set_pid_rotation_sub)(const msgs::PidParameters&) {NULL};
     void (*on_set_max_speed)(const std_msgs::Float32&) {NULL};
     void (*on_set_stop)(const std_msgs::Empty&) {NULL};
+    void (*on_wiggle)(const std_msgs::Empty&) {NULL};
 } RosApiCallbacks;
 
 class RosApi {
@@ -43,12 +44,14 @@ class RosApi {
     std_msgs::Int16 urgency_stop_msg;
     msgs::Coordinate data_all_msg;
     std_msgs::Int16 mouvement_done_msg;
+    std_msgs::Empty wiggle_done_msg;
 
     // Publishers
     ros::Publisher distance_reached_pub;
     ros::Publisher urgency_stop_pub;
     ros::Publisher data_all_pub;
     ros::Publisher mouvement_done_pub;
+    ros::Publisher wiggle_done_pub;
 
     // Subscribers
     ros::Subscriber<msgs::Displacement> set_displacement_sub;
@@ -62,6 +65,7 @@ class RosApi {
     ros::Subscriber<msgs::PidParameters> set_pid_rotation_sub;
     ros::Subscriber<std_msgs::Float32> set_max_speed_sub;
     ros::Subscriber<std_msgs::Empty> set_stop_sub;
+    ros::Subscriber<std_msgs::Empty> wiggle_sub;
 
 public:
     RosApi(RosApiCallbacks *, long=DEFAULT_BAUDRATE);
@@ -72,6 +76,7 @@ public:
     void pub_urgency_stop(int);
     void pub_data_all(data::Coordinates);
     void pub_mouvement_done(int);
+    void pub_wiggle_done(void);
 };
 
 #endif /* ROS_API_H */

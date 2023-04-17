@@ -33,6 +33,7 @@ public:
     void setRamp(bool);
     void activateDiff(bool);
     void setRunning(bool);
+    void wiggle();
 private:
 
     PID PID_dist[6];

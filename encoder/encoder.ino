@@ -123,6 +123,12 @@ void setMaxSpeed(const std_msgs::Float32 &maxSpeed)
   maxSpeedDist = maxSpeed.data;
 }
 
+void wiggle (const std_msgs::Empty &wiggle)
+{
+  flash.wiggle();
+  rosApi->pub_wiggle_done();
+}
+
 void setup()
 {
   Serial.begin(115200);
@@ -136,6 +142,7 @@ void setup()
   callbacks.on_set_position = setPosition;
   callbacks.on_set_stop = stop;
   callbacks.on_set_max_speed = setMaxSpeed;
+  callbacks.on_wiggle = wiggle;
   rosApi = new RosApi(&callbacks);
   rosApi->begin();
   delay(2000);

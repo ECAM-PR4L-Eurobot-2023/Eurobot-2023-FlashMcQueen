@@ -7,6 +7,7 @@ RosApi::RosApi(RosApiCallbacks *callbacks, long baudrate) :
     urgency_stop_pub(TOPIC_URGENCY_STOP, &urgency_stop_msg),
     data_all_pub(TOPIC_DATA_ALL, &data_all_msg),
     mouvement_done_pub(TOPIC_MOUVEMENT_DONE, &mouvement_done_msg),
+    wiggle_done_pub(TOPIC_WIGGLE_DONE, &wiggle_done_msg),
     set_displacement_sub(TOPIC_SET_DISPLACEMENT, callbacks->on_set_displacement),
     set_position_sub(TOPIC_SET_POSITION, callbacks->on_set_position),
     set_rotation_sub(TOPIC_SET_ROTATION, callbacks->on_set_rotation),
@@ -17,7 +18,8 @@ RosApi::RosApi(RosApiCallbacks *callbacks, long baudrate) :
     set_pid_position_sub(TOPIC_SET_PID_POSITION, callbacks->on_set_pid_position_sub),
     set_pid_rotation_sub(TOPIC_SET_PID_ANGLE, callbacks->on_set_pid_rotation_sub),
     set_stop_sub(TOPIC_SET_STOP, callbacks->on_set_stop),
-    set_max_speed_sub(TOPIC_SET_MAX_SPEED, callbacks->on_set_max_speed) {}
+    set_max_speed_sub(TOPIC_SET_MAX_SPEED, callbacks->on_set_max_speed),
+    wiggle_sub(TOPIC_WIGGLE, callbacks->on_wiggle) {}
 
 
 void RosApi::begin(void) {
@@ -31,6 +33,7 @@ void RosApi::begin(void) {
     nh.advertise(urgency_stop_pub);
     nh.advertise(data_all_pub);
     nh.advertise(mouvement_done_pub);
+    nh.advertise(wiggle_done_pub);
 
     // // Subscribe
     nh.subscribe(set_displacement_sub);
@@ -44,6 +47,7 @@ void RosApi::begin(void) {
     nh.subscribe(set_pid_rotation_sub);
     nh.subscribe(set_stop_sub);
     nh.subscribe(set_max_speed_sub);
+    nh.subscribe(wiggle_sub);
 }
 
 void RosApi::run(void) {
@@ -69,4 +73,8 @@ void RosApi::pub_data_all(data::Coordinates coordinates) {
 void RosApi::pub_mouvement_done(int count) {
     mouvement_done_msg.data = (int16_t)count;
     mouvement_done_pub.publish(&mouvement_done_msg);
+}
+
+void RosApi::pub_wiggle_done(void) {
+    wiggle_done_pub.publish(&wiggle_done_msg);
 }
