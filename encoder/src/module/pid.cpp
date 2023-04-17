@@ -1,6 +1,6 @@
 #include "pid.h"
 #include <Arduino.h>
-PID::PID(double *input, double *output, double *setpoint, double Kp_in, double Ki_in, double Kd_in, double min_in, double max_in, unsigned long sampleTime_in, double acceptableError_in)
+PID::PID(double *input, double *output, double *setpoint, double Kp_in, double Ki_in, double Kd_in, double min_in, double max_in, unsigned long sampleTime_in, double acceptableError_in, bool isAngle_In)
 {
     myInput = input;
     myOutput = output;
@@ -23,6 +23,7 @@ PID::PID(double *input, double *output, double *setpoint, double Kp_in, double K
     MI = 0;
     MP = 0;
     sign = true; 
+    isAngle = isAngle_In;
 }
 
 bool PID::compute()
@@ -33,6 +34,15 @@ bool PID::compute()
         // lastTime = now;
         double input = *myInput;
         double error = computeError(*mySetpoint, input);
+        if (isAngle) {
+            if (error > 3781) {
+                error -= 3781 * 2;
+            }
+            else if (error < -3781) {
+                error += 3781 * 2;
+            }
+        }
+
         if (sign != error>0){
             last_I = 0;
             sign = error>0;

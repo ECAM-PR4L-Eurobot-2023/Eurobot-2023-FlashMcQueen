@@ -6,7 +6,7 @@ class PID{
         #define ON 1
         #define OFF 0
 
-        PID(double*, double*, double*, double, double, double, double, double, unsigned long, double);
+        PID(double*, double*, double*, double, double, double, double, double, unsigned long, double, bool=false);
 
         void setMode(bool Mode);
 
@@ -58,6 +58,7 @@ class PID{
 
         int done;
         bool sign;
+        bool isAngle;
 };
 
 #endif

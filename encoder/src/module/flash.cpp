@@ -14,7 +14,7 @@
 FLASH::FLASH(double dist0[2],double dist1[2], double dist2[2],double dist3[2], double dist4[2],double dist5[2], double angle0[2],double angle1[2], double angle2[2], EncoderCompute* Encoder1, EncoderCompute* Encoder2, Moteur moteur1, Moteur moteur2,Locator *locator):
     encoder_compute1(Encoder1), encoder_compute2(Encoder2), moteur1(moteur1), moteur2(moteur2),locator(locator),
     PID_dist({PID(&inputDist, &outputDist, &setPointDist,dist0[0],dist0[1],0,-255,255,50,errorDist),PID(&inputDist, &outputDist, &setPointDist,dist1[0],dist1[1],0,-255,255,50,errorDist),PID(&inputDist, &outputDist, &setPointDist,dist2[0],dist2[1],0,-255,255,50,errorDist), PID(&inputDist, &outputDist, &setPointDist,dist3[0],dist3[1],0,-255,255,50,errorDist), PID(&inputDist, &outputDist, &setPointDist,dist4[0],dist4[1],0,-255,255,50,errorDist), PID(&inputDist,&outputDist,&setPointDist, dist5[0], dist5[1], 0,-255,255,50,errorDist)}),
-    PID_angle({PID(&inputAngle, &outputAngle, &setPointAngle,angle0[0],angle0[1],0,-255,255,50, errorAngle),PID(&inputAngle, &outputAngle, &setPointAngle,angle1[0],angle1[1],0,-255,255,50, errorAngle),PID(&inputAngle, &outputAngle, &setPointAngle,angle2[0],angle2[1],0,-255,255,50,errorAngle)}){
+    PID_angle({PID(&inputAngle, &outputAngle, &setPointAngle,angle0[0],angle0[1],0,-255,255,50, errorAngle, true),PID(&inputAngle, &outputAngle, &setPointAngle,angle1[0],angle1[1],0,-255,255,50, errorAngle, true),PID(&inputAngle, &outputAngle, &setPointAngle,angle2[0],angle2[1],0,-255,255,50,errorAngle, true)}){
         setPointAngle=0;
         setPointDist=0;
         inputAngle=0;

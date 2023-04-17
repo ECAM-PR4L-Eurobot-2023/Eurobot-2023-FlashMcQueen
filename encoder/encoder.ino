@@ -46,6 +46,7 @@ int go = 3;
 int counter = 0;
 bool new_displacement = false;
 double maxSpeedDist = 255;
+bool enable_pid = true;
 
 unsigned long int last_time = 0;
 unsigned long int lastTimeSwitch = 0;
@@ -90,6 +91,7 @@ Position to_go = {0.0,0.0,0.0,0.0};
 
 void setDisplacement(const msgs::Displacement &displacement)
 {
+  enable_pid = true;
   mouvementsAngle[0] = (double)displacement.angle_start;
   mouvementsAngle[1] = (double)displacement.angle_start;
   mouvementsAngle[2] = (double)displacement.angle_end;
@@ -100,6 +102,7 @@ void setDisplacement(const msgs::Displacement &displacement)
 
   backward = (bool)displacement.backward;
   new_displacement = true;  
+  flash.resetDone();
 }
 
 
@@ -109,6 +112,7 @@ void setPosition(const msgs::Position &position){
 
 void setRotation(const std_msgs::Float32 &rotation){
   locator.set_angle_radian((double)rotation.data);
+  flash.set_angle(locator.get_angle_degree());
 }
 
 void stop(const std_msgs::Empty &stop)
@@ -143,6 +147,7 @@ void setup()
   callbacks.on_set_stop = stop;
   callbacks.on_set_max_speed = setMaxSpeed;
   callbacks.on_wiggle = wiggle;
+  callbacks.on_set_rotation = setRotation;
   rosApi = new RosApi(&callbacks);
   rosApi->begin();
   delay(2000);
@@ -152,13 +157,13 @@ void setup()
   flash.set_angle(0);
   flash.set_dist(0);
 
-  // mouvementsAngle[0] = (double)0;
+  // mouvementsAngle[0] = (double)250;
   // mouvementsAngle[1] = (double)0;
   // mouvementsAngle[2] = (double)0;
 
 
   // to_go.x = (double)0;
-  // to_go.y = (double)1000;
+  // to_go.y = (double)0;
 
   // backward = false;
   // new_displacement = true;
@@ -168,8 +173,11 @@ void loop()
 {
   rosApi->run();
   locator.update();
-  flash.run();
-  updateSetPoints();
+
+  if (enable_pid) {
+    flash.run();
+    updateSetPoints();
+  }
   if (millis()- last_time>50){
     last_time = millis();
     send_data();
@@ -183,6 +191,7 @@ void loop()
     prevLimitSwitch = limitSwitch;
   }
 
+  delay(2);
 }
 
 

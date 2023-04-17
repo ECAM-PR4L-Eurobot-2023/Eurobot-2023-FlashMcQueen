@@ -12,9 +12,11 @@ void EncoderCompute::begin(void) {
 
 void EncoderCompute::update(void) {
     if ((millis() - mem_time) > timeout) {
-        speed_ticks = 1000.0 * (float)(encoder.get_counter() - mem_distance_ticks) / (float)timeout;
-        delta_distance_ticks = encoder.get_counter() - mem_distance_ticks;
-        mem_distance_ticks = encoder.get_counter();
+        counter_unit current_counter = encoder.get_counter();
+
+        speed_ticks = 1000.0 * (float)(current_counter - mem_distance_ticks) / (float)timeout;
+        delta_distance_ticks = current_counter - mem_distance_ticks;
+        mem_distance_ticks = current_counter;
         ticks_since_last_command += delta_distance_ticks;
         mem_time = millis();
     }    
