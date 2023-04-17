@@ -166,11 +166,11 @@ void FLASH::setRunning(bool set){
 
 void FLASH::wiggle(){
     for (int i =0; i< 3; i++){
-        moteur1.setTension(100);
-        moteur2.setTension(100);
-        delay(30);
         moteur1.setTension(-100);
         moteur2.setTension(-100);
-        delay(30);
+        delay(90);
+        moteur1.setTension(100);
+        moteur2.setTension(100);
+        delay(90);
     }
 }
