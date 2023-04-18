@@ -34,6 +34,7 @@ public:
     void activateDiff(bool);
     void setRunning(bool);
     void wiggle();
+    bool isTimedOut();
 private:
 
     PID PID_dist[6];

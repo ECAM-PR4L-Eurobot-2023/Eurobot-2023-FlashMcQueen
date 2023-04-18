@@ -104,19 +104,23 @@ void FLASH::set_dist(double dist){
 
 bool FLASH::isDone(){
     return PID_dist[distPID].isDone() && PID_angle[anglePID].isDone();
+}
 
-    
+bool FLASH::isTimedOut(){
+    return PID_dist[distPID].isTimedOut() || PID_angle[anglePID].isTimedOut();
 }
 
 void FLASH::resetDone(){
     for (int i = 0; i < 3; i++){
         PID_angle[i].resetDone();
         PID_angle[i].resetMI();
+        PID_angle[i].resetTimedOut();
         // PID_angle[i].resetMinMax();
     }
     for (int i = 0; i <6 ;i++){
         PID_dist[i].resetDone();
         PID_dist[i].resetMI();
+        PID_dist[i].resetTimedOut();
         // PID_dist[i].resetMinMax();
     }
 }

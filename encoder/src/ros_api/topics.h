@@ -22,5 +22,6 @@
 #define TOPIC_MOUVEMENT_DONE        "/robot/mouvement/done"
 #define TOPIC_WIGGLE                "/robot/wiggle"
 #define TOPIC_WIGGLE_DONE           "/robot/wiggle/done"
+#define TOPIC_PID_TIMEOUT           "/robot/pid/timeout"
 
 #endif /* TOPIC_H */

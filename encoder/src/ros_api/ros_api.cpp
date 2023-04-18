@@ -8,6 +8,7 @@ RosApi::RosApi(RosApiCallbacks *callbacks, long baudrate) :
     data_all_pub(TOPIC_DATA_ALL, &data_all_msg),
     mouvement_done_pub(TOPIC_MOUVEMENT_DONE, &mouvement_done_msg),
     wiggle_done_pub(TOPIC_WIGGLE_DONE, &wiggle_done_msg),
+    pid_timeout_pub(TOPIC_PID_TIMEOUT, &pid_timeout_msg),
     set_displacement_sub(TOPIC_SET_DISPLACEMENT, callbacks->on_set_displacement),
     set_position_sub(TOPIC_SET_POSITION, callbacks->on_set_position),
     set_rotation_sub(TOPIC_SET_ROTATION, callbacks->on_set_rotation),
@@ -34,6 +35,7 @@ void RosApi::begin(void) {
     nh.advertise(data_all_pub);
     nh.advertise(mouvement_done_pub);
     nh.advertise(wiggle_done_pub);
+    nh.advertise(pid_timeout_pub);
 
     // // Subscribe
     nh.subscribe(set_displacement_sub);
@@ -77,4 +79,9 @@ void RosApi::pub_mouvement_done(int count) {
 
 void RosApi::pub_wiggle_done(void) {
     wiggle_done_pub.publish(&wiggle_done_msg);
+}
+
+void RosApi::pub_pid_timeout(int count) {
+    pid_timeout_msg.data = (int16_t)count;
+    pid_timeout_pub.publish(&pid_timeout_msg);
 }

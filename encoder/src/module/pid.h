@@ -34,6 +34,9 @@ class PID{
 
         void resetMinMax();
 
+        void resetTimedOut();
+        bool isTimedOut();
+
     protected:
         
         double Kp;                  // * (P)roportional Tuning Parameter
@@ -45,12 +48,14 @@ class PID{
         double *mySetpoint;           //   PID, freeing the user from having to constantly tell us
                                     //   what these values are.  with pointers we'll just know.
 
+        double last_error;
+
         double min, max, acceptableError;
-        bool mode;
+        bool mode, timeout, timedOut;
 
         unsigned long sampleTime;
                 
-        unsigned long lastTime;
+        unsigned long lastTime, start;
 
         double last_I;
         double MI,MP;

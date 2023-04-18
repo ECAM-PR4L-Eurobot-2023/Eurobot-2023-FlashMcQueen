@@ -45,6 +45,7 @@ class RosApi {
     msgs::Coordinate data_all_msg;
     std_msgs::Int16 mouvement_done_msg;
     std_msgs::Empty wiggle_done_msg;
+    std_msgs::Int16 pid_timeout_msg;
 
     // Publishers
     ros::Publisher distance_reached_pub;
@@ -52,6 +53,7 @@ class RosApi {
     ros::Publisher data_all_pub;
     ros::Publisher mouvement_done_pub;
     ros::Publisher wiggle_done_pub;
+    ros::Publisher pid_timeout_pub;
 
     // Subscribers
     ros::Subscriber<msgs::Displacement> set_displacement_sub;
@@ -77,6 +79,7 @@ public:
     void pub_data_all(data::Coordinates);
     void pub_mouvement_done(int);
     void pub_wiggle_done(void);
+    void pub_pid_timeout(int);
 };
 
 #endif /* ROS_API_H */

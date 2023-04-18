@@ -24,6 +24,8 @@ PID::PID(double *input, double *output, double *setpoint, double Kp_in, double K
     MP = 0;
     sign = true; 
     isAngle = isAngle_In;
+
+    timedOut = false;
 }
 
 bool PID::compute()
@@ -32,8 +34,27 @@ bool PID::compute()
     // if ((now - lastTime) >= sampleTime)
     // {
         // lastTime = now;
+
         double input = *myInput;
         double error = computeError(*mySetpoint, input);
+
+
+        if (last_error< error+10 && last_error> error-10){
+            timeout = true;
+        }
+        else{
+            start = millis();
+            timeout = false;
+            last_error = error;
+        }
+
+        if (timeout && millis()-start>10000){
+            done = 8;
+            timeout = false;
+            timedOut = true;
+        }
+
+
         if (isAngle) {
             if (error > 3781) {
                 error -= 3781 * 2;
@@ -166,4 +187,12 @@ void PID::resetMinMax()
 {
     max = 255;
     min = -255;
+}
+
+bool PID::isTimedOut(){
+    return timedOut;
+}
+
+void PID::resetTimedOut(){
+    timedOut = false;
 }

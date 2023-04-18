@@ -199,6 +199,9 @@ void updateSetPoints()
 {
   if (new_displacement && flash.isDone() && counter < 3)
   {
+    if (flash.isTimedOut()){
+      rosApi->pub_pid_timeout(counter);
+    }
     if (counter !=1){
       flash.setMaxSpeed(150);
       flash.activateDiff(false);
