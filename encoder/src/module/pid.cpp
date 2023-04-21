@@ -27,6 +27,7 @@ PID::PID(double *input, double *output, double *setpoint, double Kp_in, double K
 
     timeout = false;
     timedOut = false;
+    done_from_timeout = false;
 }
 
 bool PID::compute()
@@ -40,16 +41,21 @@ bool PID::compute()
         double error = computeError(*mySetpoint, input);
 
 
-        if (last_error< error+2 && last_error> error-2){
+        if (last_error< error+10 && last_error> error-10){
             timeout = true;
+            Serial.println("fisrt if");
         }
         else{
             start = millis();
             timeout = false;
             last_error = error;
+            Serial.println("else");
         }
 
         if (timeout && done<7 && (millis()-start)>10000){
+        
+            Serial.println("timeout in pid");
+            done_from_timeout = true;
             done = 8;
             timeout = false;
             timedOut = true;
@@ -76,7 +82,12 @@ bool PID::compute()
         }
         else
         {
-            done = 0;
+            if (done_from_timeout){
+                done = 8;
+            }
+            else{
+                done = 0;
+            }
         }
         // Serial.print("error :");
         // Serial.println(error);
@@ -199,4 +210,5 @@ void PID::resetTimedOut(){
     start = millis();
     timeout = false;
     timedOut = false;
+    done_from_timeout = false;
 }

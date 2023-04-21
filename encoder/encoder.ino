@@ -173,16 +173,18 @@ void setup()
   flash.set_angle(0);
   flash.set_dist(0);
 
-  // mouvementsAngle[0] = (double)250;
-  // mouvementsAngle[1] = (double)0;
-  // mouvementsAngle[2] = (double)0;
+
+  maxSpeedDist=100;
+  mouvementsAngle[0] = (double)250;
+  mouvementsAngle[1] = (double)0;
+  mouvementsAngle[2] = (double)0;
 
 
-  // to_go.x = (double)0;
-  // to_go.y = (double)0;
+  to_go.x = (double)1000;
+  to_go.y = (double)0;
 
-  // backward = false;
-  // new_displacement = true;
+  backward = false;
+  new_displacement = true;
 }
 
 void loop()
@@ -216,10 +218,13 @@ void loop()
 
 void updateSetPoints()
 {
+  Serial.println(counter);
   if (new_displacement && flash.isDone() && counter < 3)
   {
+    Serial.println(counter);
     if (flash.isTimedOut()){
       rosApi->pub_pid_timeout(counter);
+      Serial.println("timeout--------------------------------------------------------------------");
     }
     if (counter !=1){
       flash.setMaxSpeed(150);

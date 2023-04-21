@@ -64,6 +64,7 @@ class PID{
         int done;
         bool sign;
         bool isAngle;
+        bool done_from_timeout;
 };
 
 #endif
