@@ -229,13 +229,7 @@ void updateSetPoints()
       flash.set_dist(0.0);
       flash.resetDone();
 
-      // double angle = abs(locator.get_angle_degree() - mouvementsAngle[counter]);
-      // if (angle<45){
-      //   flash.setAnglePID(1);
-      // }
-      // else{
-      //   flash.setAnglePID(2);
-      // }
+
     }
     else{
       flash.setMaxSpeed(maxSpeedDist);
@@ -247,22 +241,7 @@ void updateSetPoints()
       else{flash.setAnglePID(1);}
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
       flash.setDistPID(3);
-      // flash.setAnglePID(0);
-      // if (dist<70){
-      //   flash.setDistPID(0);
-      // }
-      // else if (dist<120){
-      //   flash.setDistPID(1);
-      // }
-      // else if (dist<400){
-      //   flash.setDistPID(2);
-      // }
-      // else if (dist<1100){
-      //   flash.setDistPID(3);
-      // }
-      // else{
-      //   flash.setDistPID(4);
-      // }
+
 
       flash.resetDone();
     }
