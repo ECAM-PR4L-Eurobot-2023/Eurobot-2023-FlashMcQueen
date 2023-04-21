@@ -21,7 +21,8 @@ RosApi::RosApi(RosApiCallbacks *callbacks, long baudrate) :
     set_stop_sub(TOPIC_SET_STOP, callbacks->on_set_stop),
     set_max_speed_sub(TOPIC_SET_MAX_SPEED, callbacks->on_set_max_speed),
     wiggle_sub(TOPIC_WIGGLE, callbacks->on_wiggle),
-    crab_sub(TOPIC_CRAB, callbacks->on_crab) {}
+    crab_sub(TOPIC_CRAB, callbacks->on_crab),
+    end_sub(TOPIC_END, callbacks->on_end) {}
 
 
 void RosApi::begin(void) {
@@ -52,6 +53,7 @@ void RosApi::begin(void) {
     nh.subscribe(set_max_speed_sub);
     nh.subscribe(wiggle_sub);
     nh.subscribe(crab_sub);
+    nh.subscribe(end_sub);
 }
 
 void RosApi::run(void) {

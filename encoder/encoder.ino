@@ -47,6 +47,7 @@ int counter = 0;
 bool new_displacement = false;
 double maxSpeedDist = 255;
 bool enable_pid = true;
+bool stop = false;
 
 unsigned long int last_time = 0;
 unsigned long int lastTimeSwitch = 0;
@@ -115,7 +116,7 @@ void setRotation(const std_msgs::Float32 &rotation){
   flash.set_angle(locator.get_angle_degree());
 }
 
-void stop(const std_msgs::Empty &stop)
+void stopFlash(const std_msgs::Empty &stop)
 {
   flash.stop();
   endMouvement();
@@ -138,6 +139,10 @@ void crab (const std_msgs::Empty &crab)
   flash.crabRave();
 }
 
+void endGame(const std_msgs::Empty &end){
+  stop = true;
+}
+
 
 void setup()
 {
@@ -150,7 +155,7 @@ void setup()
   locator.begin();
   callbacks.on_set_displacement = setDisplacement;
   callbacks.on_set_position = setPosition;
-  callbacks.on_set_stop = stop;
+  callbacks.on_set_stop = stopFlash;
   callbacks.on_set_max_speed = setMaxSpeed;
   callbacks.on_wiggle = wiggle;
   callbacks.on_set_rotation = setRotation;
@@ -178,6 +183,9 @@ void setup()
 
 void loop()
 {
+  while (stop){
+    killAll();
+  }
   rosApi->run();
   locator.update();
 
@@ -283,4 +291,11 @@ void endMouvement(){
     counter = 0;
     send_data();
     new_displacement = false;
+}
+
+void killAll(){
+  digitalWrite(pinPWM,LOW);
+  digitalWrite(pinPWM2, LOW);
+  digitalWrite(pinPWM3, LOW);
+  digitalWrite(pinPWM4, LOW);
 }

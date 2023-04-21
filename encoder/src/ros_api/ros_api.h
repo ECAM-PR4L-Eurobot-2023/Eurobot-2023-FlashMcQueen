@@ -33,6 +33,7 @@ typedef struct {
     void (*on_set_stop)(const std_msgs::Empty&) {NULL};
     void (*on_wiggle)(const std_msgs::Empty&) {NULL};
     void (*on_crab)(const std_msgs::Empty&) {NULL};
+    void (*on_end)(const std_msgs::Empty&) {NULL};
 } RosApiCallbacks;
 
 class RosApi {
@@ -70,6 +71,7 @@ class RosApi {
     ros::Subscriber<std_msgs::Empty> set_stop_sub;
     ros::Subscriber<std_msgs::Empty> wiggle_sub;
     ros::Subscriber<std_msgs::Empty> crab_sub;
+    ros::Subscriber<std_msgs::Empty> end_sub;
 
 public:
     RosApi(RosApiCallbacks *, long=DEFAULT_BAUDRATE);
