@@ -118,8 +118,10 @@ void setRotation(const std_msgs::Float32 &rotation){
 
 void stopFlash(const std_msgs::Empty &stop)
 {
+
   flash.stop();
   endMouvement();
+
 }
 
 void setMaxSpeed(const std_msgs::Float32 &maxSpeed)
