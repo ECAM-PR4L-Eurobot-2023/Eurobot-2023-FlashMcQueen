@@ -25,6 +25,7 @@ PID::PID(double *input, double *output, double *setpoint, double Kp_in, double K
     sign = true; 
     isAngle = isAngle_In;
 
+    timeout = false;
     timedOut = false;
 }
 
@@ -39,7 +40,7 @@ bool PID::compute()
         double error = computeError(*mySetpoint, input);
 
 
-        if (last_error< error+10 && last_error> error-10){
+        if (last_error< error+2 && last_error> error-2){
             timeout = true;
         }
         else{
@@ -48,7 +49,7 @@ bool PID::compute()
             last_error = error;
         }
 
-        if (timeout && millis()-start>10000){
+        if (timeout && done<7 && (millis()-start)>10000){
             done = 8;
             timeout = false;
             timedOut = true;
@@ -143,6 +144,7 @@ void PID::setTuning(double Kp_in, double Ki_in, double Kd_in)
 void PID::setSetpoint(double setpoint_in)
 {
     *mySetpoint = setpoint_in;
+
 }
 
 void PID::setInput(double input_in)
@@ -194,5 +196,7 @@ bool PID::isTimedOut(){
 }
 
 void PID::resetTimedOut(){
+    start = millis();
+    timeout = false;
     timedOut = false;
 }

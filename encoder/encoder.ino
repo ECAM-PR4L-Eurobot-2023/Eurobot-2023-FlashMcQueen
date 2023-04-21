@@ -80,8 +80,9 @@ double a0[2] = {0.8, 0.06}; // ok c'est good vers avant
 // double a1[2] = {0.14, 0.08}; // ok 45
 double a1[2] = {0.2, 0.02}; // ok arriere
 
-// double a2[2] = {0.05,0.15};
-double a2[2] = {0.3,0.08}; //en juste angle
+
+// double a2[2] = {0.3,0.08}; //en juste angle
+double a2[2] = {0.3,0.09}; //en juste angle
 
 FLASH flash(d0,d1,d2,d3,d4,d5,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, &locator);
 
@@ -162,6 +163,7 @@ void setup()
   callbacks.on_wiggle = wiggle;
   callbacks.on_set_rotation = setRotation;
   callbacks.on_crab = crab;
+  callbacks.on_end = endGame;
   rosApi = new RosApi(&callbacks);
   rosApi->begin();
   delay(2000);
