@@ -48,6 +48,12 @@ void FLASH::run() {
         pwmd = (outputDist - outputAngle)/2;
 
 
+        //ajouter timeout pour detection stuck mur
+        if ( (pwmg > 140 && encoder_compute1->get_speed_mm_s() <10) || (pwmd > 140 && encoder_compute2->get_speed_mm_s() <10) ){
+            unstuckCrabRave(1);
+        }
+
+
         if (activateDif){
             difPwm = pwmg - pwmd;
             if (abs(difPwm) > 6) {
@@ -177,4 +183,22 @@ void FLASH::wiggle(){
         moteur2.setTension(100);
         delay(90);
     }
+}
+
+void FLASH::crabRave(){
+    for (int i = 0; i< 3; i++){
+        moteur1.setTension(70);
+        moteur2.setTension(0);
+        delay(90);
+        moteur1.setTension(0);
+        moteur2.setTension(70);
+        delay(90);
+    }
+}
+
+
+
+//faire une autre pour unstuck quand contre un mur
+void FLASH::unstuckCrabRave(int side){
+    delay(1);
 }

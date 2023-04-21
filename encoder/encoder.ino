@@ -133,6 +133,12 @@ void wiggle (const std_msgs::Empty &wiggle)
   rosApi->pub_wiggle_done();
 }
 
+void crab (const std_msgs::Empty &crab)
+{
+  flash.crabRave();
+}
+
+
 void setup()
 {
   Serial.begin(115200);
@@ -148,6 +154,7 @@ void setup()
   callbacks.on_set_max_speed = setMaxSpeed;
   callbacks.on_wiggle = wiggle;
   callbacks.on_set_rotation = setRotation;
+  callbacks.on_crab = crab;
   rosApi = new RosApi(&callbacks);
   rosApi->begin();
   delay(2000);

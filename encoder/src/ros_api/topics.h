@@ -23,5 +23,6 @@
 #define TOPIC_WIGGLE                "/robot/wiggle"
 #define TOPIC_WIGGLE_DONE           "/robot/wiggle/done"
 #define TOPIC_PID_TIMEOUT           "/robot/pid/timeout"
+#define TOPIC_CRAB                  "/robot/crab"
 
 #endif /* TOPIC_H */

@@ -35,6 +35,9 @@ public:
     void setRunning(bool);
     void wiggle();
     bool isTimedOut();
+
+    void crabRave();
+    void unstuckCrabRave(int);
 private:
 
     PID PID_dist[6];
