@@ -43,18 +43,18 @@ bool PID::compute()
 
         if (last_error< error+10 && last_error> error-10){
             timeout = true;
-            Serial.println("fisrt if");
+            // Serial.println("fisrt if");
         }
         else{
             start = millis();
             timeout = false;
             last_error = error;
-            Serial.println("else");
+            // Serial.println("else");
         }
 
-        if (timeout && done<7 && (millis()-start)>10000){
+        if (timeout && done<7 && (millis()-start)>5000){
         
-            Serial.println("timeout in pid");
+            // Serial.println("timeout in pid");
             done_from_timeout = true;
             done = 8;
             timeout = false;
