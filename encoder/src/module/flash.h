@@ -2,7 +2,6 @@
 #define FLASH_H
 
 #include "pid.h"
-#include "pidAngle.h"
 #include "moteur.h"
 #include "encoder_compute.h"
 #include "locator.h"
