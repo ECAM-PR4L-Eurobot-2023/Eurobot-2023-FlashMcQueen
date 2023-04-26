@@ -5,9 +5,9 @@
 #include "src/module/encoder_compute.h"
 #include "src/module/locator.h"
 #include "src/module/pid.h"
-#include "src/module/pidAngle.h"
+// #include "src/module/pidAngle.h"
 #include "src/module/moteur.h"
-#include "src/module/pidPosition.h"
+// #include "src/module/pidPosition.h"
 #include "src/module/flash.h"
 
 #include "src/data/displacement.h"
