@@ -1,19 +1,4 @@
-#include <Arduino.h>
-#include <driver/gpio.h>
-#include <Wire.h>
-
-#include "encoder_compute.h"
-#include "locator.h"
-#include "pid.h"
-// #include "src/module/pidAngle.h"
-#include "moteur.h"
-// #include "src/module/pidPosition.h"
-#include "flash.h"
-
-#include "../data/displacement.h"
-#include "../ros_api/msg/Displacement.h"
-#include "../ros_api/ros_api.h"
-#include "../ros_api/topics.h"
+#include "callbacks.h"
 
 #define pinPWM 26
 #define pinPWM2 25
@@ -23,21 +8,20 @@
 
 #define COMPUTE_TIMEOUT (20)
 
-double d0[2] = {0.2, 0.050}; // pour les rotation
-double d1[2] = {0.15, 0.03};
-double d2[2] = {0.14, 0.014};
+d0[2] = {0.2, 0.050}; // pour les rotation
+d1[2] = {0.15, 0.03};
+d2[2] = {0.14, 0.014};
 
-double d3[2] = {0.20, 0.03}; // celui qui etait bon avec marchand en mouvement droit
+d3[2] = {0.20, 0.03}; // celui qui etait bon avec marchand en mouvement droit
+d4[2] = {0.11, 0.028};
 
-double d4[2] = {0.11, 0.028};
+d5[2] = {0.2, 0.05}; // pour les rotations
 
-double d5[2] = {0.2, 0.05}; // pour les rotations
+a0[2] = {0.8, 0.06}; // ok c'est good vers avant
 
-double a0[2] = {0.8, 0.06}; // ok c'est good vers avant
+a1[2] = {0.2, 0.02}; // ok arriere
 
-double a1[2] = {0.2, 0.02}; // ok arriere
-
-double a2[2] = {0.3,0.09}; //en juste angle
+a2[2] = {0.3,0.09}; //en juste angle
 
 
 #define pinLimitSwitchArr 27
@@ -45,7 +29,7 @@ double a2[2] = {0.3,0.09}; //en juste angle
 RosApiCallbacks callbacks{};
 RosApi *rosApi;
 
-EncoderCompute encoder_right(34, 35, COMPUTE_TIMEOUT);
+EncoderCompute encoder_right = EncoderCompute(34, 35, COMPUTE_TIMEOUT);
 EncoderCompute encoder_left(22, 23, COMPUTE_TIMEOUT);
 Locator locator(&encoder_left, &encoder_right,COMPUTE_TIMEOUT);
 

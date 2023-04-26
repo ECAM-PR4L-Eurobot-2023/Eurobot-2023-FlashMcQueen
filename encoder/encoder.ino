@@ -1,5 +1,3 @@
-
-
 #include "src/module/callbacks.h"
 
 void setup()
