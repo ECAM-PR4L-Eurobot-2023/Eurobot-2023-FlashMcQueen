@@ -85,25 +85,22 @@ void FLASH::run()
             pwmd = limPwmD;
         }
 
-        else
+        if (activateRamp)
         {
-            if (activateRamp)
+            if (pwmg - lastpwmg > ramp)
             {
-                if (pwmg - lastpwmg > ramp)
-                {
-                    pwmg = lastpwmg + ramp;
-                    lastpwmg = pwmg;
-                }
-                if (pwmd - lastpwmd > ramp)
-                {
-                    pwmd = lastpwmd + ramp;
-                    lastpwmd = pwmd;
-                }
+                pwmg = lastpwmg + ramp;
+                lastpwmg = pwmg;
             }
-
-            moteur1.setTension(pwmg);
-            moteur2.setTension(pwmd);
+            if (pwmd - lastpwmd > ramp)
+            {
+                pwmd = lastpwmd + ramp;
+                lastpwmd = pwmd;
+            }
         }
+
+        moteur1.setTension(pwmg);
+        moteur2.setTension(pwmd);
     }
 }
 

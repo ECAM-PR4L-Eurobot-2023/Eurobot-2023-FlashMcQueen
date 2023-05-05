@@ -53,8 +53,7 @@ unsigned long int last_time = 0;
 unsigned long int lastTimeSwitch = 0;
 
 unsigned long int now = 0;
-// FLASH flash(0.085, 0.04, 0.30, 0.040,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
-// FLASH flash(0.085, 0.04, 0.4, 0.0,0.04,0.0055, &encoder_left, &encoder_right, moteurL, moteurR, 0);
+
 double d0[2] = {0.2, 0.050}; // pour les rotation
 double d1[2] = {0.15, 0.03};
 double d2[2] = {0.14, 0.014};
@@ -63,25 +62,13 @@ double d3[2] = {0.20, 0.03}; // celui qui etait bon avec marchand en mouvement d
 
 double d4[2] = {0.11, 0.028};
 
-// double d5[2] = {0.8, 0.3}; // pour les rotations
+
 double d5[2] = {0.2, 0.05}; // pour les rotations
 
-
-// double a0[2] = {0.37, 0.1};
-// double a0[2] = {0.2, 0.02};
-// double a0[2] = {0.3, 0.05};
 double a0[2] = {0.8, 0.06}; // ok c'est good vers avant
 
-//pour avance {0.8,0.05}
-//pour recule {0.2,0.02}
-
-// double a0[2] = {0.4, 0.0};
-// double a1[2] = {0.135, 0.015}; // ok 45
-// double a1[2] = {0.14, 0.08}; // ok 45
 double a1[2] = {0.2, 0.02}; // ok arriere
 
-
-// double a2[2] = {0.3,0.08}; //en juste angle
 double a2[2] = {0.3,0.09}; //en juste angle
 
 FLASH flash(d0,d1,d2,d3,d4,d5,a0,a1,a2, &encoder_left, &encoder_right, moteurL, moteurR, &locator);
@@ -235,8 +222,6 @@ void updateSetPoints()
       flash.set_angle(mouvementsAngle[counter]);
       flash.set_dist(0.0);
       flash.resetDone();
-
-
     }
     else{
       flash.setMaxSpeed(maxSpeedDist);
@@ -248,8 +233,6 @@ void updateSetPoints()
       else{flash.setAnglePID(1);}
       flash.set_dist((dist*2)/DISTANCE_PER_TICKS);
       flash.setDistPID(3);
-
-
       flash.resetDone();
     }
     rosApi->pub_mouvement_done(counter);
