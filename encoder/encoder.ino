@@ -17,9 +17,12 @@
 
 #define COMPUTE_TIMEOUT (20)
 
+
+//pin moteur left
 #define pinPWM 26
 #define pinPWM2 25
 
+//pin moteur right
 #define pinPWM3 32
 #define pinPWM4 33
 
